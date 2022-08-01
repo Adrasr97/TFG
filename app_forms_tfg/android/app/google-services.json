@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "590589466500",
+    "project_id": "trabajo-fin-de-grado-adra",
+    "storage_bucket": "trabajo-fin-de-grado-adra.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:590589466500:android:77a8af190051a3088cefd1",
+        "android_client_info": {
+          "package_name": "com.example.app_forms_tfg"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "590589466500-ks8e3un7jcs4msa386mghvo8usreuou1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApJAHg4yrTsMQbYuqovKHtN_jmwUL0c8E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "590589466500-ks8e3un7jcs4msa386mghvo8usreuou1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

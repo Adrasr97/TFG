@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>590589466500-iv7n0l6cs8hs6019883epcj58edbrshk.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.590589466500-iv7n0l6cs8hs6019883epcj58edbrshk</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCIujm2eda_b2vXa2EvbdwNlLhEEhTRAPI</string>
+	<key>GCM_SENDER_ID</key>
+	<string>590589466500</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.appFormsTfg</string>
+	<key>PROJECT_ID</key>
+	<string>trabajo-fin-de-grado-adra</string>
+	<key>STORAGE_BUCKET</key>
+	<string>trabajo-fin-de-grado-adra.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:590589466500:ios:5887f37098c6a4418cefd1</string>
+</dict>
+</plist>
