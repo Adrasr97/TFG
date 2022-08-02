@@ -1,0 +1,25 @@
+List<dynamic> buscaValorDeClave(
+    String clave, String json, int posicionInicial) {
+  //log('Buscando $clave en ->$json<- desde posición $posicionInicial');
+  int n = json.indexOf(clave, posicionInicial);
+  if (n >= 0) {
+    //log('id encontrado en posicion en $n: ${json.substring(n, n + 15)}');
+
+    int m = json.indexOf(':', n);
+    //log('m es $m');
+    // Ahora buscamos el primer caracter no blanco a partir de m
+    while (json.substring(m + 1, m + 2) == ' ') {
+      m++;
+      //caracter = json.substring(m + 1, m + 2);
+    }
+    int inicioValor = m + 1;
+    //log('A partir de : ->${estructura.substring(inicioId, inicioId + 15)}<-');
+    while (json.substring(m + 2, m + 3) != '"') {
+      m++;
+      //caracter = estructura.substring(m + 2, m + 3);
+    }
+    return [json.substring(inicioValor, m + 3), inicioValor];
+  } else {
+    return ['', -1];
+  }
+}

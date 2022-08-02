@@ -1,0 +1,237 @@
+/* PERTENECE A getFormularios.dart */
+
+Future<List<Formulario>> downloadFormularios() async {
+  dynamic definicionesFormularios;
+  final database = openDatabase(
+    // Establecer el path a la base de datos
+    // Note: Using the `join` function from the `path` package is best practice
+    // to ensure the path is correctly constructed for each platform.
+    join(await getDatabasesPath(), 'formularios.db'),
+    // Cuando la base de datos es creada pr primera vez, se crean las tablas necesarias
+    onCreate: (db, version) {
+      // varchar se convierte a TEXT
+      db.execute(
+        'CREATE TABLE formularios(id varchar(50) PRIMARY KEY, version INTEGER, titulo TEXT, icono TEXT, campoClave TEXT, campoTitulo TEXT, campoSubtitulo TEXT, estructura TEXT)',
+      );
+      db.execute(
+        //'CREATE TABLE datos(id varchar(50), formulario varchar(50), versionFormulario INTEGER, autor TEXT, ultimaModificacion TEXT, titulo TEXT, subtitulo TEXT, valores TEXT,  PRIMARY KEY (id, formulario, versionFormulario))',
+        'CREATE TABLE datos(id varchar(50), formulario varchar(50), versionFormulario INTEGER, titulo TEXT, subtitulo TEXT, valores TEXT,  PRIMARY KEY (id, formulario, versionFormulario))',
+      );
+      log('Tablas creadas.');
+      return;
+    },
+    // Dar valor a la versión
+    //Así se ejecuta la funcion onCreate y se proporciona un path en el que hacer las actualizaciones
+    version: 1,
+  );
+
+  try {
+    final response =
+        // acceso al servidor
+        await http.get(Uri.parse('http://217.18.163.9/formularios.php'));
+    if (response.statusCode == 200) {
+      definicionesFormularios = jsonDecode(response.body);
+      //log('Leído de servidor:');
+      //log(definicionesFormularios.toString());
+      for (var i = 0; i < definicionesFormularios.length; i++) {
+        //log('Inicializando Formulario ${definicionesFormularios[i]['id']}');
+        var formulario = Formulario(
+            id: definicionesFormularios[i]['id'],
+            version: definicionesFormularios[i]['version'],
+            titulo: definicionesFormularios[i]['titulo'],
+            icono: definicionesFormularios[i]['icon'],
+            campoClave: definicionesFormularios[i]['campoClave'],
+            campoTitulo: definicionesFormularios[i]['campoTitulo'],
+            campoSubtitulo: definicionesFormularios[i]['campoSubtitulo'],
+            estructura: jsonEncode(definicionesFormularios[i]));
+        // Se inserta (o actualiza) el formulario
+        //log('Grabando Formulario ${definicionesFormularios[i]['id']}');
+        insertFormulario(formulario, database);
+        //log('Grabado Formulario ${definicionesFormularios[i]['id']}');
+      }
+    } else {
+      // Si el servidor no devuelve como respuesta 200 OK, se lanza una excepcion
+      throw Exception('Error en descarga de formularios');
+    }
+  } catch (e) {
+    print('No se ha podido acceder al servidor: $e');
+  }
+  // Se devuelven los formularios almacenados en la base de datos
+  return leeFormularios(database);
+}
+
+
+/* PERTENECE A getFormularios.dart */
+
+Future<void> insertFormulario(Formulario f, Future<Database> database) async {
+  // Referencia a la base de datos
+  final db = await database;
+  //print('Grabado:' + f.toString());
+  await db.insert(
+    'formularios',
+    f.toMap(),
+    conflictAlgorithm: ConflictAlgorithm.replace,
+  );
+}
+
+
+/* PERTENECE A getFormularios.dart */
+
+Future<List<Formulario>> leeFormularios(Future<Database> database) async {
+  // Referencia a la base de datos
+  final db = await database;
+  // Query, consulta a la tabla para todos los formularios
+  final List<Map<String, dynamic>> maps =
+      //await db.query('formularios') where: 'id=?', whereArgs: ['f2']);
+      await db.query('formularios');
+  // Convertir la List<Map<String, dynamic> en List<Formulario>
+  final formularios = List.generate(maps.length, (i) {
+    final formulario = Formulario(
+      id: maps[i]['id'],
+      version: maps[i]['version'],
+      titulo: maps[i]['titulo'],
+      icono: maps[i]['icono'],
+      campoClave: maps[i]['campoClave'],
+      campoTitulo: maps[i]['campoTitulo'],
+      campoSubtitulo: maps[i]['campoSubtitulo'],
+      estructura: maps[i]['estructura'],
+    );
+    //log('Leido de DB:' + formulario.toString());
+    return formulario;
+  });
+  return formularios;
+}
+
+/* PERTENECE A getDatos.dart */
+
+Future<List<Dato>> leeDatos(formId, formVersion) async {
+  //log('Leyendo datos para formulario $formId versión $formVersion');
+  final database = await openDatabase(
+      join(await getDatabasesPath(), 'formularios.db'),
+      version: 1);
+  final List<Map<String, dynamic>> maps = await database.query('datos',
+      where: 'formulario=? and versionFormulario=?',
+      whereArgs: [formId, formVersion]);
+  //log('Leídas ${maps.length} filas de la base de datos');
+  // Convertir la List<Map<String, dynamic> en List<Dato>
+  final datos = List.generate(maps.length, (i) {
+    //log('Fila $i: ${maps[i]['id']} ');
+    final dato = Dato(
+      id: maps[i]['id'],
+      formulario: maps[i]['formulario'],
+      versionFormulario: maps[i]['versionFormulario'],
+      titulo: maps[i]['titulo'],
+      subtitulo: maps[i]['subtitulo'],
+    );
+    //log('Leido de DB:' + dato.toString());
+    return dato;
+  });
+  //log('Leídos ${datos.length} datos');
+  return datos;
+}
+
+
+/* PERTENECE A formulario.dart */
+
+
+void _submitToServer(
+      BuildContext context, List<FormPropertyValue> formProperties) async {
+    final database = await openDatabase(
+        join(await getDatabasesPath(), 'formularios.db'),
+        version: 1);
+    //log('Hay que grabar en DB y enviar al servidor:');
+    String id = '';
+    String titulo = '';
+    String subtitulo = '';
+    String valores = '[';
+    //log('campoTitulo es ' + widget.formulario!.campoTitulo);
+    formProperties.forEach((propiedad) {
+      //log('Procesando propiedad con id ' + propiedad.id);
+      valores += '{"id":"' +
+          propiedad.id +
+          '","property":"' +
+          propiedad.property +
+          '","value":"' +
+          propiedad.value +
+          '"},';
+      // No se usan else ifs porque la misma propiedad puede ser campo clave, título y subtítulo
+      if (propiedad.id == widget.formulario!.campoClave) {
+        id = propiedad.value;
+      }
+      if (propiedad.id == widget.formulario!.campoTitulo) {
+        titulo = propiedad.value;
+      }
+      if (propiedad.id == widget.formulario!.campoSubtitulo) {
+        subtitulo = propiedad.value;
+      }
+    });
+    // Una vez terminado el bucle, se elimina la última coma de valores y se le añade un corchete
+    valores = valores.substring(0, valores.length - 1) + ']';
+    //log(valores);
+    //log('Id de datos:' + id);
+    //log('Titulo:' + titulo);
+    //log('Subtitulo:' + titulo);
+    //log('Id del formulario:' + widget.formulario!.id);
+    var argumentos = [
+      widget.formulario!.id,
+      widget.formulario!.version,
+      titulo,
+      subtitulo,
+      valores,
+      id
+    ];
+    bool exitoDB = true;
+    if (widget.nuevo!) {
+      try {
+        int res = await database.rawInsert(
+            'INSERT INTO datos(formulario, versionFormulario, titulo, subtitulo, valores, id) VALUES(?,?,?,?,?,?)',
+            argumentos);
+      } catch (e) {
+        exitoDB = false;
+        log('Exception $e');
+      }
+    } else {
+      try {
+        database.rawUpdate(
+            'UPDATE datos set formulario=?, versionFormulario=?, titulo=?, subtitulo=?, valores=? where id=?',
+            argumentos);
+      } catch (e) {
+        exitoDB = false;
+        log('Exception $e');
+      }
+    }
+
+    if (exitoDB) {
+      var url = 'http://217.18.163.9/subeDatos.php';
+      var body = json.encode([
+        {"id": id},
+        {"formulario": widget.formulario!.id},
+        {"versionFormulario": widget.formulario!.version},
+        {"titulo": titulo},
+        {"subtitulo": subtitulo},
+        {"valores": valores}
+      ]);
+      // Por la forma en que se ha construido valores, al pasar por json.encode se producen algunos efectos no deseados que invalidan el formato json
+      body = body.replaceAll('\\"', '"');
+      body = body.replaceAll(':"[', ':[');
+      body = body.replaceAll(']"}', ']}');
+      log('body: $body');
+      Map<String, String> headers = {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+      };
+      try {
+        final Response response =
+            await http.post(Uri.parse(url), body: body, headers: headers);
+      } catch (e) {
+        log('No se ha podido subir el fichero al servidor $e');
+      }
+    }
+    /* Log */
+    var filas = await database.rawQuery('select * from datos order by id');
+    filas.forEach((fila) {
+      log('LOG query' +
+          fila['id'].toString() +
+          ':' +
+          fila['valores'].toString());
+    });

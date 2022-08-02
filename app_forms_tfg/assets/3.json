@@ -1,0 +1,46 @@
+{
+  "@name": "form",
+  "icon": "0xe038",
+  "titulo": "Formulario 3",
+  "id": "form3",
+  "children": [
+    {
+      "@name": "form",
+      "id": "sliderCollection",
+      "children": [
+        {
+          "@name": "slider",
+          "id": "slider1",
+          "value": "15.0",
+          "minValue": "0.0",
+          "maxValue": "100.0"
+        },
+        {
+          "@name": "slider",
+          "id": "slider2",
+          "value": "15.0",
+          "minValue": "0.0",
+          "maxValue": "100.0"
+        }
+      ]
+    },
+    {
+      "@name": "label",
+      "value": {
+        "expression": "\"Slider 1: \" + toString(round(@slider1.value!, 2))"
+      }
+    },
+    {
+      "@name": "label",
+      "value": {
+        "expression": "\"Slider 2: \" + toString(round(@slider2.value!, 2))"
+      }
+    },
+    {
+      "@name": "label",
+      "value": {
+        "expression": "\"Sum: \"  + toString(round(sumNumbers(selectNumberProperty(@sliderCollection.children, \"value\")), 2)) "
+      }
+    }
+  ]
+}
