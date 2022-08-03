@@ -1,4 +1,6 @@
 import 'package:app_forms_tfg/firebase_options.dart';
+import 'package:app_forms_tfg/modules/auth/controller/auth_controller.dart';
+import 'package:app_forms_tfg/modules/auth/screens/splash_screen.dart';
 import 'package:app_forms_tfg/modules/home/screens/home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +13,9 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  // Instanciar el controlador para la Autenticación
+  Get.put<AuthController>(AuthController());
+
   runApp(const MyApp());
 }
 
@@ -21,7 +26,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const GetMaterialApp(
       title: 'Material App',
-      home: HomeScreen(),
+      home: SplashScreen(),
     );
   }
 }
