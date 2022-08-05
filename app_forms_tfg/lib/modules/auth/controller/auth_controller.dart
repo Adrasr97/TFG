@@ -1,10 +1,18 @@
+import 'dart:developer';
+
+import 'package:app_forms_tfg/layout/widgets/buttons/email_sign_in_button.dart';
+import 'package:app_forms_tfg/modules/auth/screens/email_sign_in_ui.dart';
 import 'package:app_forms_tfg/modules/auth/screens/login_screens.dart';
 import 'package:app_forms_tfg/modules/home/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AuthController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  // Controladores para manejar los datos de email y contraseña del usuario
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   // Rxn hará que firebaseUser sea una variable observable, si sufre algun cambio se notifica
   // User es el Modelo de Usuario de Firebase
@@ -32,7 +40,8 @@ class AuthController extends GetxController {
     if (firebaseUser == null) {
       Get.offAll(
           // Si no existe cerramos a todas las paginas y navega a la pantalla de login
-          const LoginScreen());
+          //const LoginScreen());
+          EmailSignInUi());
     } else {
       Get.offAll(const HomeScreen());
     }
@@ -46,5 +55,41 @@ class AuthController extends GetxController {
   // Sign out para cerrar sesión
   Future<void> signOut() {
     return _auth.signOut();
+  }
+
+  // Method to handle user sign in using email and password
+  signInWithEmailAndPassword(BuildContext context) async {
+    try {
+      await _auth.signInWithEmailAndPassword(
+        email:
+            emailController.text.trim(), // trim para deshacerse de los espacios
+        password: passwordController.text.trim(),
+      );
+    } on FirebaseAuthException catch (e) {
+      // Firebase lanza sus propios erroes para la autenticación
+      log('$e');
+    }
+  }
+
+  // User registration using email and password
+  registerwithEmailAndPassword(BuildContext context) async {
+    try {
+      await _auth
+          .createUserWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      )
+          .then((result) async {
+        print(
+          "Uid: " + result.user!.uid.toString(),
+        );
+        print(
+          "Email: " + result.user!.email.toString(),
+        );
+      });
+    } on FirebaseAuthException catch (e) {
+      // Firebase lanza sus propios erroes para la autenticación
+      log('$e');
+    }
   }
 }
