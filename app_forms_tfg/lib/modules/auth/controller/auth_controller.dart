@@ -43,7 +43,7 @@ class AuthController extends GetxController {
           //const LoginScreen());
           EmailSignInUi());
     } else {
-      Get.offAll(const HomeScreen());
+      Get.offAll(HomeScreen());
     }
   }
 

@@ -1,4 +1,5 @@
 import 'package:app_forms_tfg/layout/components/validators.dart';
+import 'package:app_forms_tfg/layout/spaces/form_vertical_spacing.dart';
 import 'package:app_forms_tfg/layout/widgets/buttons/primary_button.dart';
 import 'package:app_forms_tfg/layout/widgets/forms/form_input_field_with_icon.dart';
 import 'package:app_forms_tfg/modules/auth/controller/auth_controller.dart';
@@ -18,55 +19,74 @@ class EmailSignInUi extends StatelessWidget {
     return Scaffold(
         body: Column(children: [
       Form(
-        key: _formKey,
-        child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  FormInputFieldWithIcon(
-                    controller: authController.emailController,
-                    iconPrefix: Icons.email,
-                    keyboardType: TextInputType.emailAddress,
-                    labelText: 'Email',
-                    validator: Validator().email, // validacion del email
-                    minLines: 1,
-                    obscureText: false,
-                    onSaved: (value) =>
-                        authController.emailController.text = value!,
-                    onChanged: (value) =>
-                        null, // no se quiere guardar el valor, el cambio ya se está manejando
-                  ),
-                  FormInputFieldWithIcon(
-                    controller: authController.passwordController,
-                    iconPrefix: Icons.lock,
-                    keyboardType: TextInputType.emailAddress,
-                    labelText: 'Password',
-                    validator: Validator().password, // validacion del email
-                    minLines: 1,
-                    maxLines:
-                        1, // maxLines requerido para obscureText verdadero
-                    obscureText:
-                        true, // para ocultar los caracteres de la contraseña
-                    onSaved: (value) =>
-                        authController.emailController.text = value!,
-                    onChanged: (value) =>
-                        null, // no se quiere guardar el valor, el cambio ya se está manejando
-                  ),
-                  PrimaryButton(
-                    labelText: 'Enviar',
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        // si el formulario es valido
-                        authController.signInWithEmailAndPassword(context);
-                      } else {}
-                    },
-                  )
-                ]),
-          ),
-        ),
-      )
+          key: _formKey,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+              vertical: 48.0,
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    CircleAvatar(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.white,
+                      radius: 60.0,
+                      child: ClipOval(
+                        child: Image.asset(
+                          //"assets/images/logo-dynamic-forms-icono.png",
+                          "assets/images/4.png",
+                          fit: BoxFit.cover,
+                          height: 240,
+                          width: 240,
+                        ),
+                      ),
+                    ),
+                    FormInputFieldWithIcon(
+                      controller: authController.emailController,
+                      iconPrefix: Icons.email,
+                      keyboardType: TextInputType.emailAddress,
+                      labelText: 'Email',
+                      validator: Validator().email, // validacion del email
+                      minLines: 1,
+                      obscureText: false,
+                      onSaved: (value) =>
+                          authController.emailController.text = value!,
+                      onChanged: (value) =>
+                          null, // no se quiere guardar el valor, el cambio ya se está manejando
+                    ),
+                    const FormVerticalSpacing(),
+                    FormInputFieldWithIcon(
+                      controller: authController.passwordController,
+                      iconPrefix: Icons.lock,
+                      keyboardType: TextInputType.emailAddress,
+                      labelText: 'Password',
+                      validator: Validator().password, // validacion del email
+                      minLines: 1,
+                      maxLines:
+                          1, // maxLines requerido para obscureText verdadero
+                      obscureText:
+                          true, // para ocultar los caracteres de la contraseña
+                      onSaved: (value) =>
+                          authController.emailController.text = value!,
+                      onChanged: (value) =>
+                          null, // no se quiere guardar el valor, el cambio ya se está manejando
+                    ),
+                    const FormVerticalSpacing(),
+                    PrimaryButton(
+                      labelText: 'Enviar',
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          // si el formulario es valido
+                          authController.signInWithEmailAndPassword(context);
+                        } else {}
+                      },
+                    )
+                  ]),
+            ),
+          )),
     ]));
   }
 }
