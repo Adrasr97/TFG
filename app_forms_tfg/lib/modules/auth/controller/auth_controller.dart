@@ -13,6 +13,7 @@ class AuthController extends GetxController {
   // Controladores para manejar los datos de email y contraseña del usuario
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  //TextEditingController nameController = TextEditingController();
 
   // Rxn hará que firebaseUser sea una variable observable, si sufre algun cambio se notifica
   // User es el Modelo de Usuario de Firebase
@@ -61,8 +62,8 @@ class AuthController extends GetxController {
   signInWithEmailAndPassword(BuildContext context) async {
     try {
       await _auth.signInWithEmailAndPassword(
-        email:
-            emailController.text.trim(), // trim para deshacerse de los espacios
+        // trim para deshacerse de los espacios
+        email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
     } on FirebaseAuthException catch (e) {
@@ -76,6 +77,7 @@ class AuthController extends GetxController {
     try {
       await _auth
           .createUserWithEmailAndPassword(
+        //name: nameController.text,
         email: emailController.text,
         password: passwordController.text,
       )
@@ -85,7 +87,10 @@ class AuthController extends GetxController {
         );
         print(
           "Email: " + result.user!.email.toString(),
-        );
+        ); /*
+        print(
+          "Nombre: " + result.user!.name.toString(),
+        );*/
       });
     } on FirebaseAuthException catch (e) {
       // Firebase lanza sus propios erroes para la autenticación

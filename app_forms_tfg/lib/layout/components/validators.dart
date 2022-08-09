@@ -20,4 +20,14 @@ class Validator {
       return null;
     }
   }
+
+  String? name(String? value) {
+    String pattern = r'^.{6,}$'; // !!! cambiar patron para validar nombre
+    RegExp regex = RegExp(pattern);
+    if (!regex.hasMatch(value!)) {
+      return 'Nombre no válido';
+    } else {
+      return null;
+    }
+  }
 }
