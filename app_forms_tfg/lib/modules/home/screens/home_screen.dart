@@ -1,12 +1,11 @@
 import 'package:app_forms_tfg/models/form_model.dart';
 import 'package:app_forms_tfg/modules/auth/controller/auth_controller.dart';
 import 'package:app_forms_tfg/modules/generate_dynamic_forms/controller/form_controller.dart';
+import 'package:app_forms_tfg/modules/home/screens/details_screen.dart';
 import 'package:app_forms_tfg/services/firestore_service_forms.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/instance_manager.dart';
-
-import '../../generate_dynamic_forms/controller/form_controller.dart';
 
 class HomeScreen extends StatelessWidget {
   final AuthController authController = AuthController.to;
@@ -41,8 +40,19 @@ class HomeScreen extends StatelessWidget {
           () => ListView.builder(
             itemCount: formController.formsList.value.length,
             itemBuilder: (context, index) {
-              return Text(
-                formController.formsList.value[index].uid!,
+              return TextButton(
+                onPressed: () {
+                  Get.to(() => DetailsScreen(
+                        formModel: formController.formsList.value[index],
+                      ));
+                },
+                child: Container(
+                  height: 50,
+                  color: Colors.green,
+                  child: Text(
+                    formController.formsList.value[index].name!,
+                  ),
+                ),
               );
             },
           ),
