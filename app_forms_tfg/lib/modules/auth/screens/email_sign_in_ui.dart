@@ -10,8 +10,8 @@ import 'package:get/get.dart';
 
 class EmailSignInUi extends StatelessWidget {
   final AuthController authController = AuthController.to;
-  final GlobalKey<FormState> _formKey =
-      GlobalKey<FormState>(); // Key del formulario
+  // Key del formulario
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   EmailSignInUi({Key? key}) : super(key: key);
 

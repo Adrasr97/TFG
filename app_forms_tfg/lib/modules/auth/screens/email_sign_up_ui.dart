@@ -49,7 +49,7 @@ class EmailSignUpUi extends StatelessWidget {
                       ),
                       /*FormInputFieldWithIcon(
                         // NOMBRE
-                        controller: authController.nameController,
+                       controller: authController.nameController,
                         iconPrefix: Icons.person,
                         labelText: 'Nombre',
                         validator: Validator().name,
@@ -57,7 +57,7 @@ class EmailSignUpUi extends StatelessWidget {
                         onSaved: (value) =>
                             authController.nameController.text = value!,
                       ),
-                      const FormVerticalSpacing(),*/
+                      const FormVerticalSpacing()*/
                       FormInputFieldWithIcon(
                         // EMAIL
                         controller: authController.emailController,

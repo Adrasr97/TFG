@@ -12,7 +12,7 @@ class Validator {
   }
 
   String? password(String? value) {
-    String pattern = r'^.{6,}$';
+    String pattern = r'^.{6,}$'; // se aceptan todos los números y letras
     RegExp regex = RegExp(pattern);
     if (!regex.hasMatch(value!)) {
       return 'Password no válido';
@@ -22,7 +22,21 @@ class Validator {
   }
 
   String? name(String? value) {
-    String pattern = r'^.{6,}$'; // !!! cambiar patron para validar nombre
+    String pattern = r'^.{6,}$';
+    RegExp regex = RegExp(pattern);
+    if (!regex.hasMatch(value!)) {
+      // aquí se puede poner poner condición de longitud
+      return 'Nombre no válido';
+    } else {
+      return null;
+    }
+  }
+
+/*
+// VALIDATOR NOMBRE USUARIO SING UP
+  String? name(String? value) {
+    // String pattern = r'^.{6,}$'; // !!! cambiar patron para validar nombre
+    String pattern = r'^[a-zA-Z0-9]+$';
     RegExp regex = RegExp(pattern);
     if (!regex.hasMatch(value!)) {
       return 'Nombre no válido';
@@ -30,4 +44,5 @@ class Validator {
       return null;
     }
   }
+  */
 }

@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:app_forms_tfg/layout/widgets/buttons/email_sign_in_button.dart';
 import 'package:app_forms_tfg/modules/auth/screens/email_sign_in_ui.dart';
 import 'package:app_forms_tfg/modules/auth/screens/login_screens.dart';
@@ -13,7 +12,7 @@ class AuthController extends GetxController {
   // Controladores para manejar los datos de email y contraseña del usuario
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  //TextEditingController nameController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
 
   // Rxn hará que firebaseUser sea una variable observable, si sufre algun cambio se notifica
   // User es el Modelo de Usuario de Firebase
@@ -68,11 +67,13 @@ class AuthController extends GetxController {
       );
     } on FirebaseAuthException catch (e) {
       // Firebase lanza sus propios erroes para la autenticación
+      Get.snackbar('$e', '$e');
+
       log('$e');
     }
   }
 
-  // User registration using email and password
+  // User registration using name, email and password
   registerwithEmailAndPassword(BuildContext context) async {
     try {
       await _auth
@@ -94,7 +95,43 @@ class AuthController extends GetxController {
       });
     } on FirebaseAuthException catch (e) {
       // Firebase lanza sus propios erroes para la autenticación
+      Get.snackbar('$e', '$e');
+
+      // Manejar con switch cuenta ya existente, utilizando errores de Firebase
+      /*var grade = "A";
+      switch (grade) {
+        case "A":
+          {
+            log("Excellent");
+          }
+          break;
+
+        case "B":
+          {
+            log("Good");
+          }
+          break;
+
+        case "C":
+          {
+            log("Fair");
+          }
+          break;
+
+        case "D":
+          {
+            log("Poor");
+          }
+          break;
+
+        default:
+          {
+            log("Invalid choice");
+          }
+          break;
+      }*/
       log('$e');
+      //print("Failed with error '${e.code}': ${e.message}");
     }
   }
 }

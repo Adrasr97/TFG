@@ -22,7 +22,9 @@ class DatabaseForms {
   }
 
   Future<bool> createNewForm(
-      {required FormModel model, required User user}) async {
+      {required FormModel model,
+      required User user,
+      required TypeForm form}) async {
     try {
       model.uid = _firestore.collection(_collection).doc().id;
       await _firestore.collection(_collection).doc(model.uid).set({
@@ -31,6 +33,7 @@ class DatabaseForms {
         "nameUser": user.displayName,
         "uidUser": user.uid,
         "description": model.description,
+        "typeForm": form.name,
       });
       return true;
     } catch (e) {

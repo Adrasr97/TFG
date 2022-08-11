@@ -4,6 +4,8 @@ part 'form_model.g.dart';
 
 // Clase del modelo mediante el paquete json_serializable
 @JsonSerializable(anyMap: true, explicitToJson: true)
+enum TypeForm { emptyForm, textForm, otroForm }
+
 class FormModel {
   String? uid;
   final String? nameUser;
