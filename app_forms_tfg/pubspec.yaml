@@ -31,6 +31,11 @@ dependencies:
   get: ^4.6.5
   build_runner:
   json_serializable:
+  # A flutter project providing infrastructure to render dynamic forms.
+  flutter_dynamic_forms: ^1.0.0
+  # A flutter project containing default set of components for the flutter dynamic forms library.
+  flutter_dynamic_forms_components: ^1.0.0
+  expression_language: ^1.0.1
 
 dev_dependencies:
   flutter_test:

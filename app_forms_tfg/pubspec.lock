@@ -176,6 +176,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.3"
+  dynamic_forms:
+    dependency: transitive
+    description:
+      name: dynamic_forms
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
+  expression_language:
+    dependency: "direct main"
+    description:
+      name: expression_language
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   fake_async:
     dependency: transitive
     description:
@@ -244,6 +258,20 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_dynamic_forms:
+    dependency: "direct main"
+    description:
+      name: flutter_dynamic_forms
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
+  flutter_dynamic_forms_components:
+    dependency: "direct main"
+    description:
+      name: flutter_dynamic_forms_components
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -380,6 +408,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
+  nested:
+    dependency: transitive
+    description:
+      name: nested
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   package_config:
     dependency: transitive
     description:
@@ -394,6 +429,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.2"
+  petitparser:
+    dependency: transitive
+    description:
+      name: petitparser
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.4.0"
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -408,6 +450,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.5.1"
+  provider:
+    dependency: transitive
+    description:
+      name: provider
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.0.0"
   pub_semver:
     dependency: transitive
     description:
@@ -422,6 +471,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0"
+  rational:
+    dependency: transitive
+    description:
+      name: rational
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.1"
+  rxdart:
+    dependency: transitive
+    description:
+      name: rxdart
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.26.0"
   shelf:
     dependency: transitive
     description:
@@ -539,6 +602,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.0"
+  xml:
+    dependency: transitive
+    description:
+      name: xml
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.3.1"
   yaml:
     dependency: transitive
     description:
@@ -548,4 +618,4 @@ packages:
     version: "3.1.1"
 sdks:
   dart: ">=2.17.5 <3.0.0"
-  flutter: ">=1.12.13+hotfix.5"
+  flutter: ">=1.16.0"
