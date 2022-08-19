@@ -50,19 +50,17 @@ class HomeScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               return TextButton(
                 onPressed: () {
-                  Get.to(() => DetailsScreen(
-                        formModel: formController.formsList.value[index],
-                      ));
+                  print('onClick');
                 },
                 child: Container(
                   height: 50,
                   margin: const EdgeInsets.all(20.0),
                   color: Colors.black,
-                  child: Text(
-                    //formController.formsList.value[index].uid!,
-                    //'Probando error',
-                    formController.formsList.value[index].name!,
-                  ),
+                  child: Text('Form prueba'
+                      //formController.formsList.value[index].uid!,
+                      //'Probando error',
+                      //formController.formsList.value[index].name!,
+                      ),
                 ),
               );
             },

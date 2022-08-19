@@ -38,6 +38,7 @@ class AuthController extends GetxController {
     // Para identificar si el usuario existe o no
 
     if (firebaseUser == null) {
+      //ofAll() recibe la página a la que navegar
       Get.offAll(
           // Si no existe cerramos a todas las paginas y navega a la pantalla de login
           //const LoginScreen());
