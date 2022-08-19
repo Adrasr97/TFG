@@ -35,7 +35,12 @@ dependencies:
   flutter_dynamic_forms: ^1.0.0
   # A flutter project containing default set of components for the flutter dynamic forms library.
   flutter_dynamic_forms_components: ^1.0.0
+  # Dart library for parsing and evaluating expressions.
   expression_language: ^1.0.1
+  # SQLite plugin for Flutter. Supports iOS, Android and MacOS.
+  sqflite: ^2.0.3+1
+  # A comprehensive, cross-platform path manipulation library for Dart.
+  path: ^1.8.1
 
 dev_dependencies:
   flutter_test:

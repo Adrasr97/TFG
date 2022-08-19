@@ -1,4 +1,4 @@
-import 'package:app_forms_tfg/models/form_model.dart';
+
 import 'package:app_forms_tfg/models/modelo_formulario.dart';
 import 'package:expression_language/expression_language.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +11,8 @@ import 'package:dynamic_forms/dynamic_forms.dart';
 import 'package:flutter_dynamic_forms/flutter_dynamic_forms.dart';
 import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_components.dart'
 as components;
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart' as path;
 
 class DetailsScreen extends StatefulWidget {
   final Formulario formModel;
@@ -48,8 +50,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       var formProperties =
                       FormProvider.of<JsonFormManager>(context)
                           .getFormProperties();
-                      //_submitToServer(context, formProperties);
-                      Navigator.pop(context);
+                      _submitToServer(context, formProperties);
+                      //Navigator.pop(context);
                     },
                   );
                 },
@@ -83,6 +85,145 @@ class _DetailsScreenState extends State<DetailsScreen> {
       ),
     );
   }
+
+
+
+  void _submitToServer(
+      BuildContext context, List<FormPropertyValue> formProperties) async {
+    //final database = await openDatabase(path.join(await getDatabasesPath(), 'formularios.db'), version: 1);
+    log('Hay que grabar en DB y enviar al servidor:');
+    String id = '';
+    String titulo = '';
+    String subtitulo = '';
+    String valores = '[';
+    log('campoTitulo es ' + widget.formModel.campoTitulo);
+    formProperties.forEach((propiedad) {
+      log('Procesando propiedad con id ' + propiedad.id);
+      valores += '{"id":"' +
+          propiedad.id +
+          '","property":"' +
+          propiedad.property +
+          '","value":"' +
+          propiedad.value +
+          '"},';
+      // No se usan else ifs porque la misma propiedad puede ser campo clave, título y subtítulo
+      if (propiedad.id == widget.formModel.campoClave) {
+        id = propiedad.value;
+      }
+      if (propiedad.id == widget.formModel.campoTitulo) {
+        titulo = propiedad.value;
+      }
+      if (propiedad.id == widget.formModel.campoSubtitulo) {
+        subtitulo = propiedad.value;
+      }
+    });
+    // Una vez terminado el bucle, se elimina la última coma de valores y se le añade un corchete
+    valores = valores.substring(0, valores.length - 1) + ']';
+    log(valores);
+    log('Id de datos:' + id);
+    log('Titulo:' + titulo);
+    log('Subtitulo:' + titulo);
+    log('Id del formulario:' + widget.formModel.id);
+    var argumentos = [
+      widget.formModel.id,
+      widget.formModel.version,
+      titulo,
+      subtitulo,
+      valores,
+      id
+    ];
+    bool exitoDB = true;
+
+    log('argumentos ${argumentos}');
+
+    /*
+    if (widget.nuevo!) {
+      try {
+        int res = await database.rawInsert(
+            'INSERT INTO datos(formulario, versionFormulario, titulo, subtitulo, valores, id) VALUES(?,?,?,?,?,?)',
+            argumentos);
+      } catch (e) {
+        exitoDB = false;
+        log('Exception $e');
+      }
+    } else {
+      try {
+        database.rawUpdate(
+            'UPDATE datos set formulario=?, versionFormulario=?, titulo=?, subtitulo=?, valores=? where id=?',
+            argumentos);
+      } catch (e) {
+        exitoDB = false;
+        log('Exception $e');
+      }
+    }*/
+
+    /*
+    if (exitoDB) {
+      var url = 'http://217.18.163.9/subeDatos.php';
+      var body = json.encode([
+        {"id": id},
+        {"formulario": widget.formulario!.id},
+        {"versionFormulario": widget.formulario!.version},
+        {"titulo": titulo},
+        {"subtitulo": subtitulo},
+        {"valores": valores}
+      ]);
+      // Por la forma en que se ha construido valores, al pasar por json.encode se producen algunos efectos no deseados que invalidan el formato json
+      body = body.replaceAll('\\"', '"');
+      body = body.replaceAll(':"[', ':[');
+      body = body.replaceAll(']"}', ']}');
+      log('body: $body');
+      Map<String, String> headers = {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+      };
+      try {
+        final Response response =
+        await http.post(Uri.parse(url), body: body, headers: headers);
+      } catch (e) {
+        log('No se ha podido subir el fichero al servidor $e');
+      }
+    }*/
+    /* Log */
+    /*
+    var filas = await database.rawQuery('select * from datos order by id');
+    filas.forEach((fila) {
+      log('LOG query' +
+          fila['id'].toString() +
+          ':' +
+          fila['valores'].toString());
+    });*/
+/*
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Form data'),
+          content: Container(
+            width: double.maxFinite,
+            height: 300.0,
+            child: ListView(
+              padding: EdgeInsets.all(8.0),
+              //map List of our data to the ListView
+              children: formProperties
+                  .map((riv) => Text('${riv.id} ${riv.property} ${riv.value}'))
+                  .toList(),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        );
+      },
+    );*/
+    /* FIN LOG */
+  }
+
 }
 
 

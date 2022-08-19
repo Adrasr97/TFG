@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:app_forms_tfg/models/form_model.dart';
 import 'package:app_forms_tfg/models/modelo_formulario.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -44,6 +43,7 @@ class FirestoreFormDesign {
     });
   }
 
+  /*
   Future<bool> createNewForm(
       {required FormModel model,
       required User user,
@@ -62,5 +62,5 @@ class FirestoreFormDesign {
     } catch (e) {
       return false;
     }
-  }
+  }*/
 }
