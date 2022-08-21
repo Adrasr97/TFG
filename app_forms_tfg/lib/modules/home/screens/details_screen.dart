@@ -1,5 +1,7 @@
 
 import 'package:app_forms_tfg/models/modelo_formulario.dart';
+import 'package:app_forms_tfg/services/firestore_services_form_design.dart';
+import 'package:app_forms_tfg/services/sqlite_database.dart';
 import 'package:expression_language/expression_language.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dynamic_forms/flutter_dynamic_forms.dart';
@@ -23,6 +25,10 @@ class DetailsScreen extends StatefulWidget {
 }
 
 class _DetailsScreenState extends State<DetailsScreen> {
+
+  final SQLiteDatabase sqLiteDatabase = SQLiteDatabase();
+  final FirestoreFormDesign firestoreFormDesign = FirestoreFormDesign();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,71 +97,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
   void _submitToServer(
       BuildContext context, List<FormPropertyValue> formProperties) async {
     //final database = await openDatabase(path.join(await getDatabasesPath(), 'formularios.db'), version: 1);
-    log('Hay que grabar en DB y enviar al servidor:');
-    String id = '';
-    String titulo = '';
-    String subtitulo = '';
-    String valores = '[';
-    log('campoTitulo es ' + widget.formModel.campoTitulo);
-    formProperties.forEach((propiedad) {
-      log('Procesando propiedad con id ' + propiedad.id);
-      valores += '{"id":"' +
-          propiedad.id +
-          '","property":"' +
-          propiedad.property +
-          '","value":"' +
-          propiedad.value +
-          '"},';
-      // No se usan else ifs porque la misma propiedad puede ser campo clave, título y subtítulo
-      if (propiedad.id == widget.formModel.campoClave) {
-        id = propiedad.value;
-      }
-      if (propiedad.id == widget.formModel.campoTitulo) {
-        titulo = propiedad.value;
-      }
-      if (propiedad.id == widget.formModel.campoSubtitulo) {
-        subtitulo = propiedad.value;
-      }
-    });
-    // Una vez terminado el bucle, se elimina la última coma de valores y se le añade un corchete
-    valores = valores.substring(0, valores.length - 1) + ']';
-    log(valores);
-    log('Id de datos:' + id);
-    log('Titulo:' + titulo);
-    log('Subtitulo:' + titulo);
-    log('Id del formulario:' + widget.formModel.id);
-    var argumentos = [
-      widget.formModel.id,
-      widget.formModel.version,
-      titulo,
-      subtitulo,
-      valores,
-      id
-    ];
-    bool exitoDB = true;
+    await sqLiteDatabase.saveData(widget.formModel, formProperties);
+    await firestoreFormDesign.syncFormData();
 
-    log('argumentos ${argumentos}');
-
-    /*
-    if (widget.nuevo!) {
-      try {
-        int res = await database.rawInsert(
-            'INSERT INTO datos(formulario, versionFormulario, titulo, subtitulo, valores, id) VALUES(?,?,?,?,?,?)',
-            argumentos);
-      } catch (e) {
-        exitoDB = false;
-        log('Exception $e');
-      }
-    } else {
-      try {
-        database.rawUpdate(
-            'UPDATE datos set formulario=?, versionFormulario=?, titulo=?, subtitulo=?, valores=? where id=?',
-            argumentos);
-      } catch (e) {
-        exitoDB = false;
-        log('Exception $e');
-      }
-    }*/
 
     /*
     if (exitoDB) {
