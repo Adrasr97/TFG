@@ -79,7 +79,7 @@ class EmailSignInUi extends StatelessWidget {
               ),
               const FormVerticalSpacing(),
               PrimaryButton(
-                labelText: 'Enviar',
+                labelText: 'Entrar',
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     // si el formulario es valido

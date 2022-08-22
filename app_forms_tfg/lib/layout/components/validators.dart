@@ -5,7 +5,7 @@ class Validator {
     String pattern = r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+';
     RegExp regex = RegExp(pattern);
     if (!regex.hasMatch(value!)) {
-      return 'Email no válido';
+      return 'Introduce un Email válido';
     } else {
       return null;
     }
@@ -15,7 +15,7 @@ class Validator {
     String pattern = r'^.{6,}$'; // se aceptan todos los números y letras
     RegExp regex = RegExp(pattern);
     if (!regex.hasMatch(value!)) {
-      return 'Password no válido';
+      return 'Introduce una contraseña válida';
     } else {
       return null;
     }
@@ -26,7 +26,7 @@ class Validator {
     RegExp regex = RegExp(pattern);
     if (!regex.hasMatch(value!)) {
       // aquí se puede poner poner condición de longitud
-      return 'Nombre no válido';
+      return 'Introduce un nombre válido';
     } else {
       return null;
     }

@@ -86,7 +86,7 @@ class EmailSignUpUi extends StatelessWidget {
                         height: 20,
                       ),
                       PrimaryButton(
-                          labelText: 'Inscribirse',
+                          labelText: 'Registrarse',
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
                               SystemChannels.textInput.invokeMethod(
