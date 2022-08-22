@@ -133,4 +133,32 @@ class SQLiteDatabase {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
+
+  Future<void> saveFirestoreDataToLocal(Map<String, dynamic> firestoreData) async {
+    try {
+      final database = await openDatabase(
+        path.join(await getDatabasesPath(), DATABASE),
+        version: 1,
+      );
+      log('Database open');
+
+      log('check if data was insert');
+      final List<Map<String, dynamic>> queryResult = await database.query(
+        'datos',
+        where: 'formulario=? and versionFormulario=? and titulo=?',
+        whereArgs: [firestoreData['formulario'], firestoreData['versionFormulario'], firestoreData['titulo']],
+      );
+
+      log('query result: ${queryResult}');
+
+      int res = await database.insert('datos', firestoreData,
+          conflictAlgorithm: ConflictAlgorithm.replace);
+      log('insert result: $res');
+
+    }catch(ex){
+      log('error saving data: $ex');
+      throw Exception('Error al guardar datos, intente de nuevo');
+    }
+  }
+
 }

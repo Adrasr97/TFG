@@ -1,13 +1,13 @@
 import 'package:app_forms_tfg/modules/auth/controller/auth_controller.dart';
 import 'package:app_forms_tfg/modules/generate_dynamic_forms/controller/form_controller.dart';
 import 'package:app_forms_tfg/modules/home/screens/details_screen.dart';
+import 'package:app_forms_tfg/services/firestore_services_form_design.dart';
 import 'package:app_forms_tfg/services/sqlite_database.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/instance_manager.dart';
 
 class HomeScreen extends StatefulWidget {
-
   HomeScreen({Key? key}) : super(key: key);
 
   @override
@@ -17,11 +17,30 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final AuthController authController = AuthController.to;
   final SQLiteDatabase sqLiteDatabase = SQLiteDatabase();
+  final FirestoreFormDesign firestoreFormDesign = FirestoreFormDesign();
 
-  void handleClick(String value) {
+  Future<void> handleClick(String value) async {
     switch (value) {
       case 'Salir':
         authController.signOut();
+        break;
+      case 'Sincronizar':
+        try {
+          await firestoreFormDesign.syncFormData();
+          final snackBar = new SnackBar(
+              content: new Text('Datos sincronizados'),
+              backgroundColor: Colors.green);
+
+          // Find the Scaffold in the Widget tree and use it to show a SnackBar!
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        } catch (ex) {
+          final snackBar = new SnackBar(
+              content: new Text(ex.toString()), backgroundColor: Colors.red);
+
+          // Find the Scaffold in the Widget tree and use it to show a SnackBar!
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+
         break;
     }
   }
@@ -41,9 +60,9 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text("Formularios"),
         actions: [
           PopupMenuButton<String>(
-            onSelected: handleClick,
+            onSelected: (value) async => await handleClick(value),
             itemBuilder: (BuildContext context) {
-              return {'Salir'}.map((String choice) {
+              return {'Salir', 'Sincronizar'}.map((String choice) {
                 return PopupMenuItem<String>(
                   value: choice,
                   child: Text(choice),

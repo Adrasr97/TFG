@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:app_forms_tfg/models/modelo_formulario.dart';
 import 'package:app_forms_tfg/services/sqlite_database.dart';
@@ -48,11 +49,29 @@ class FirestoreFormDesign {
   }
 
   Future<void> syncFormData() async {
-    log('synFormData');
+    log('syncFormData');
+
 
     if (_auth.currentUser == null) {
       throw Exception('Sesión no iniciada, acceda primero');
     }
+
+    bool isConnected = false;
+// use try-catch to do this operation, so that to get the control over this
+// operation better
+    try{
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        isConnected = true;
+      }
+    } on SocketException catch (_) {
+      log('error internet connection');
+    }
+
+    if(!isConnected){
+      throw Exception('Revise su conexión a internet para sincronizar datos');
+    }
+
     //get the user id from auth
     final userUid = _auth.currentUser!.uid;
 
@@ -70,32 +89,47 @@ class FirestoreFormDesign {
     //extraer todo lo de firestore a local
 
     if (dataQuery.isNotEmpty) {
+
       for (var d in dataQuery) {
         log('data to save -> $d');
         final dataId =
             '${d['formulario']}-${d['versionFormulario']}-${d['id']}';
-        _firestore
+        await _firestore
             .collection('user')
             .doc(userUid)
             .collection('data')
             .doc(dataId)
-            .set({
-          'id': d['id'],
-          'formulario': d['formulario'],
-          'versionFormulario': d['versionFormulario'],
-          'titulo': d['titulo'],
-          'subtitulo': d['subtitulo'],
-          'valores': d['valores'],
-        },SetOptions(merge: true));
+            .set(
+          {
+            'id': d['id'],
+            'formulario': d['formulario'],
+            'versionFormulario': d['versionFormulario'],
+            'titulo': d['titulo'],
+            'subtitulo': d['subtitulo'],
+            'valores': d['valores'],
+          },
+          SetOptions(merge: true),
+        );
       }
     }
 
     await _sqLiteDatabase.markDataAsUploaded();
 
+    var firestoreData = (await _firestore
+            .collection('user')
+            .doc(userUid)
+            .collection('data')
+            .get())
+        .docs;
 
-    //TODO falta sincronizar la descarga y guardar en local
+    //tener los elementos de firestore y guardarlos en local
+    for (final firestoreElement in firestoreData) {
+      var map = firestoreElement.data();
+      log('firestore doc-> $map');
+      await _sqLiteDatabase.saveFirestoreDataToLocal(map);
+    }
 
-
+    //TODO ver los datos insertados de formularios
   }
 
   /*
@@ -118,4 +152,5 @@ class FirestoreFormDesign {
       return false;
     }
   }*/
+
 }

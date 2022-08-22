@@ -32,9 +32,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        Get.back();
-      }),
+
       body: SingleChildScrollView(
         child: ParsedFormProvider(
           create: (_) => JsonFormManager(),
@@ -52,11 +50,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 builder: (context) {
                   return ElevatedButton(
                     child: const Text("Grabar"),
-                    onPressed: () {
+                    onPressed: () async{
                       var formProperties =
                       FormProvider.of<JsonFormManager>(context)
                           .getFormProperties();
-                      _submitToServer(context, formProperties);
+                      await _submitToServer(context, formProperties);
                       //Navigator.pop(context);
                     },
                   );
@@ -94,78 +92,29 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
 
 
-  void _submitToServer(
+  Future<void> _submitToServer(
       BuildContext context, List<FormPropertyValue> formProperties) async {
-    //final database = await openDatabase(path.join(await getDatabasesPath(), 'formularios.db'), version: 1);
-    await sqLiteDatabase.saveData(widget.formModel, formProperties);
-    await firestoreFormDesign.syncFormData();
+    try{
+      await sqLiteDatabase.saveData(widget.formModel, formProperties);
+      await firestoreFormDesign.syncFormData();
 
+      final snackBar = new SnackBar(content: new Text('Datos guardados y sincronizados'),
+          backgroundColor: Colors.green);
 
-    /*
-    if (exitoDB) {
-      var url = 'http://217.18.163.9/subeDatos.php';
-      var body = json.encode([
-        {"id": id},
-        {"formulario": widget.formulario!.id},
-        {"versionFormulario": widget.formulario!.version},
-        {"titulo": titulo},
-        {"subtitulo": subtitulo},
-        {"valores": valores}
-      ]);
-      // Por la forma en que se ha construido valores, al pasar por json.encode se producen algunos efectos no deseados que invalidan el formato json
-      body = body.replaceAll('\\"', '"');
-      body = body.replaceAll(':"[', ':[');
-      body = body.replaceAll(']"}', ']}');
-      log('body: $body');
-      Map<String, String> headers = {
-        'Content-type': 'application/json',
-        'Accept': 'application/json',
-      };
-      try {
-        final Response response =
-        await http.post(Uri.parse(url), body: body, headers: headers);
-      } catch (e) {
-        log('No se ha podido subir el fichero al servidor $e');
-      }
-    }*/
-    /* Log */
-    /*
-    var filas = await database.rawQuery('select * from datos order by id');
-    filas.forEach((fila) {
-      log('LOG query' +
-          fila['id'].toString() +
-          ':' +
-          fila['valores'].toString());
-    });*/
-/*
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Form data'),
-          content: Container(
-            width: double.maxFinite,
-            height: 300.0,
-            child: ListView(
-              padding: EdgeInsets.all(8.0),
-              //map List of our data to the ListView
-              children: formProperties
-                  .map((riv) => Text('${riv.id} ${riv.property} ${riv.value}'))
-                  .toList(),
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Ok'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            )
-          ],
-        );
-      },
-    );*/
-    /* FIN LOG */
+      // Find the Scaffold in the Widget tree and use it to show a SnackBar!
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+      Get.back();
+    }catch(ex){
+      log('ocurrio un error al guardar datos');
+      log(ex.toString());
+      final snackBar = new SnackBar(content: new Text(ex.toString()),
+          backgroundColor: Colors.red);
+
+      // Find the Scaffold in the Widget tree and use it to show a SnackBar!
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+
   }
 
 }
