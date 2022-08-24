@@ -1,3 +1,4 @@
+import 'package:app_forms_tfg/models/data_model.dart';
 import 'package:app_forms_tfg/models/modelo_formulario.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
@@ -159,6 +160,51 @@ class SQLiteDatabase {
       log('error saving data: $ex');
       throw Exception('Error al guardar datos, intente de nuevo');
     }
+  }
+
+  Future<List<Dato>> readData(formId, formVersion) async {
+    log('Leyendo datos para formulario $formId versión $formVersion');
+    final database = await openDatabase(
+        path.join(await getDatabasesPath(), 'formularios.db'),
+        version: 1);
+    final List<Map<String, dynamic>> maps = await database.query('datos',
+        where: 'formulario=? and versionFormulario=?',
+        whereArgs: [formId, formVersion]);
+    log('Leídas ${maps.length} filas de la base de datos');
+    // Convertir la List<Map<String, dynamic> en List<Dato>
+    final datos = List.generate(maps.length, (i) {
+      log('Fila $i: ${maps[i]['id']} ');
+      final dato = Dato(
+        id: maps[i]['id'],
+        formulario: maps[i]['formulario'],
+        versionFormulario: maps[i]['versionFormulario'],
+        titulo: maps[i]['titulo'],
+        subtitulo: maps[i]['subtitulo'],
+        valores: maps[i]['valores'],
+        uploaded: maps[i]['uploaded'] ?? 0
+      );
+      //log('Leido de DB:' + dato.toString());
+      return dato;
+    });
+    log('Leídos ${datos.length} datos');
+    return datos;
+  }
+
+  Future<void> deleteData(Dato data) async{
+
+    final database = await openDatabase(
+      path.join(await getDatabasesPath(), DATABASE),
+      version: 1,
+    );
+    log('Database open');
+
+    log('delete data');
+     await database.delete(
+      'datos',
+      where: 'formulario=? and versionFormulario=? and id=?',
+      whereArgs: [data.formulario, data.versionFormulario, data.id],
+    );
+
   }
 
 }

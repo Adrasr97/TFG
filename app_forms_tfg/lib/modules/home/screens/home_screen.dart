@@ -1,4 +1,5 @@
 import 'package:app_forms_tfg/modules/auth/controller/auth_controller.dart';
+import 'package:app_forms_tfg/modules/data/data_list.dart';
 import 'package:app_forms_tfg/modules/generate_dynamic_forms/controller/form_controller.dart';
 import 'package:app_forms_tfg/modules/home/screens/details_screen.dart';
 import 'package:app_forms_tfg/services/firestore_services_form_design.dart';
@@ -15,6 +16,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+
+
   final AuthController authController = AuthController.to;
   final SQLiteDatabase sqLiteDatabase = SQLiteDatabase();
   final FirestoreFormDesign firestoreFormDesign = FirestoreFormDesign();
@@ -79,23 +83,26 @@ class _HomeScreenState extends State<HomeScreen> {
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () => {
-                  Get.to(() => DetailsScreen(
+                  Get.to(() => /*DetailsScreen(
                         formModel: formController.formsList.value[index],
-                      ))
+                      )*/
+                  
+                    DataList(formulario: formController.formsList.value[index])
+                  )
                 },
                 child: Card(
                     child: Padding(
                         padding: EdgeInsets.all(10),
                         child: ListTile(
                           title: Text(
-                            formController.formsList.value[index].id,
+                            formController.formsList.value[index].titulo,
                             style: TextStyle(
                               fontSize: 20,
                             ),
                           ),
-                          leading: Icon(IconData(int.parse(
-                              formController.formsList.value[index].icono))),
-                          trailing: Text("Llenos: 0"),
+                          leading: Icon(IconData(int.parse(formController.formsList.value[index]!.icono),
+                    fontFamily: 'MaterialIcons')),
+                          trailing: Text('version ${formController.formsList.value[index].version}'),
                         ))),
               );
             },

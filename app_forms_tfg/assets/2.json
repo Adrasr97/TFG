@@ -12,7 +12,7 @@
       "@name": "textField",
       "id": "sourceText",
       "label": "Enter custom text",
-      "value": "Hello"
+      "value": ""
     },
     {
       "@name": "label",

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:app_forms_tfg/models/data_model.dart';
 import 'package:app_forms_tfg/models/modelo_formulario.dart';
 import 'package:app_forms_tfg/services/sqlite_database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -130,6 +131,44 @@ class FirestoreFormDesign {
     }
 
     //TODO ver los datos insertados de formularios
+
+
+
+  }
+
+  Future<void> deleteData(Dato data)async {
+
+    if (_auth.currentUser == null) {
+      throw Exception('Sesión no iniciada, acceda primero');
+    }
+
+    bool isConnected = false;
+// use try-catch to do this operation, so that to get the control over this
+// operation better
+    try{
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        isConnected = true;
+      }
+    } on SocketException catch (_) {
+      log('error internet connection');
+    }
+
+    if(!isConnected){
+      throw Exception('Revise su conexión a internet para sincronizar datos');
+    }
+
+    //get the user id from auth
+    final userUid = _auth.currentUser!.uid;
+
+
+    final dataId =
+        '${data.formulario}-${data.versionFormulario}-${data.id}';
+    await _firestore
+        .collection('user')
+        .doc(userUid)
+        .collection('data')
+        .doc(dataId).delete();
   }
 
   /*

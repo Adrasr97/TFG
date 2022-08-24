@@ -7,6 +7,7 @@ class Dato {
   final String titulo;
   final String subtitulo;
   String? valores;
+  int uploaded;
 
   Dato({
     required this.id,
@@ -15,6 +16,7 @@ class Dato {
     required this.titulo,
     required this.subtitulo,
     this.valores,
+    this.uploaded = 0
   });
 
   Map<String, dynamic> toMap() {
@@ -27,6 +29,7 @@ class Dato {
       'titulo': titulo,
       'subtitulo': subtitulo,
       'valores': valores,
+      'uploaded':uploaded
     };
   }
 
