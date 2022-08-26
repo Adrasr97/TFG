@@ -39,6 +39,7 @@ class _DataListState extends State<DataList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black45,
         title: Text(widget.formulario!.titulo),
         //title: Text('Título'),
       ),
@@ -80,7 +81,37 @@ class _DataListState extends State<DataList> {
                                 },
                               if (value == 'Eliminar')
                                 {
-                                  deleteData(context, data),
+                                  showDialog(
+                                    context: context,
+                                    builder: (ctx) => AlertDialog(
+                                      title: Text("Eliminar formulario"),
+                                      content: Text(
+                                          "¿Seguro que quiere elimirar este formulario?"),
+                                      actions: <Widget>[
+                                        ElevatedButton(
+                                            child: Text("No"),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.black45,
+                                              fixedSize: const Size(15, 15),
+                                            )),
+                                        ElevatedButton(
+                                            child: Text("Sí"),
+                                            onPressed: () {
+                                              deleteData(context, data);
+                                              Navigator.of(context).pop();
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.black45,
+                                              fixedSize: const Size(15, 15),
+                                            )),
+                                      ],
+                                    ),
+                                  ),
+                                  // Al clickar sobre Eliminar, se elimina directamente
+                                  //deleteData(context, data),
                                 }
                             },
                           ),
@@ -125,6 +156,10 @@ class _DataListState extends State<DataList> {
                   setState(() {});
                 });
               },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black45,
+                fixedSize: const Size(15, 15),
+              ),
               child: const Icon(Icons.add),
             ),
             ElevatedButton(
@@ -149,6 +184,10 @@ class _DataListState extends State<DataList> {
                 //actualizar el estado de la pantalla
                 setState(() {});
               },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black45,
+                fixedSize: const Size(15, 15),
+              ),
               child: const Icon(Icons.refresh),
             ),
           ],
@@ -198,7 +237,7 @@ class _DataListState extends State<DataList> {
                 estructura.substring(
                     valorDePropiedad[1] + valorDePropiedad[0].length);
           } else {
-            // El campo que hace las veces de clave primaria no será editable
+            // El campo que sirve de clave primaria no será editable
             estructura = estructura.substring(0, valorDePropiedad[1]) +
                 '"' +
                 valor +

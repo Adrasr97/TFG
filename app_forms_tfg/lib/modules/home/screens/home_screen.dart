@@ -16,9 +16,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
-
-
   final AuthController authController = AuthController.to;
   final SQLiteDatabase sqLiteDatabase = SQLiteDatabase();
   final FirestoreFormDesign firestoreFormDesign = FirestoreFormDesign();
@@ -35,13 +32,13 @@ class _HomeScreenState extends State<HomeScreen> {
               content: new Text('Datos sincronizados'),
               backgroundColor: Colors.green);
 
-          // Find the Scaffold in the Widget tree and use it to show a SnackBar!
+          // Find the Scaffold in the Widget tree and use it to show a SnackBar
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         } catch (ex) {
           final snackBar = new SnackBar(
               content: new Text(ex.toString()), backgroundColor: Colors.red);
 
-          // Find the Scaffold in the Widget tree and use it to show a SnackBar!
+          // Find the Scaffold in the Widget tree and use it to show a SnackBar
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
 
@@ -57,10 +54,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //FormModel formModel = FormModel(
-    //    description: "Hola soy un formulario 3", name: "nuevo formulario 3");
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black45,
         title: const Text("Formularios"),
         actions: [
           PopupMenuButton<String>(
@@ -83,12 +79,14 @@ class _HomeScreenState extends State<HomeScreen> {
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () => {
-                  Get.to(() => /*DetailsScreen(
+                  Get.to(
+                      () => /*DetailsScreen(
                         formModel: formController.formsList.value[index],
                       )*/
-                  
-                    DataList(formulario: formController.formsList.value[index])
-                  )
+
+                          DataList(
+                              formulario:
+                                  formController.formsList.value[index]))
                 },
                 child: Card(
                     child: Padding(
@@ -100,9 +98,12 @@ class _HomeScreenState extends State<HomeScreen> {
                               fontSize: 20,
                             ),
                           ),
-                          leading: Icon(IconData(int.parse(formController.formsList.value[index]!.icono),
-                    fontFamily: 'MaterialIcons')),
-                          trailing: Text('version ${formController.formsList.value[index].version}'),
+                          leading: Icon(IconData(
+                              int.parse(
+                                  formController.formsList.value[index]!.icono),
+                              fontFamily: 'MaterialIcons')),
+                          trailing: Text(
+                              'version ${formController.formsList.value[index].version}'),
                         ))),
               );
             },

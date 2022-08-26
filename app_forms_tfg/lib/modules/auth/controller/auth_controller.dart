@@ -21,11 +21,11 @@ class AuthController extends GetxController {
   // Declarar la instancia de Get.find para acceder al controlador con el método to
   static AuthController to = Get.find();
 
-  // Cuando el controlador esté list ose ejecuta lo que hay dentro de onReady()
+  // Cuando el controlador esté listo se ejecuta onReady()
   // Permite identficiar si el usuario existe
   @override
   void onReady() {
-    // run every time auth state changes, siempre que firebaseUser sufra cambio, se llama al handler
+    // Siempre que el estado de firebaseUser sufra cambio, se llama al handler
     ever(firebaseUser, handleAuthChanged);
 
     // bindStream pertenece a GetX para que cuando haya cambio se notifique en la pantalla
@@ -35,30 +35,28 @@ class AuthController extends GetxController {
   }
 
   handleAuthChanged(firebaseUser) async {
-    // Para identificar si el usuario existe o no
+    // Para identificar si el usuario existe
 
     if (firebaseUser == null) {
       //ofAll() recibe la página a la que navegar
       Get.offAll(
-          // Si no existe cerramos a todas las paginas y navega a la pantalla de login
-          //const LoginScreen());
+          // Si el usuario no existe se navega a la pantalla de login
           EmailSignInUi());
     } else {
+      // Si existe, se navega a la pantalla principal
       Get.offAll(HomeScreen());
     }
   }
 
-  // Firebase user a realtime stream
-  // Permite notificar en caso de que haya cambios en el User
   // Todos los cambios sobre el usuario serán notificados a través de este Stream
   Stream<User?> get user => _auth.authStateChanges();
 
-  // Sign out para cerrar sesión
+  // Método para cerrar sesión
   Future<void> signOut() {
     return _auth.signOut();
   }
 
-  // Method to handle user sign in using email and password
+  // Método para manejar el acceso de los usuarios a la aplicación
   signInWithEmailAndPassword(BuildContext context) async {
     try {
       await _auth.signInWithEmailAndPassword(
@@ -67,19 +65,18 @@ class AuthController extends GetxController {
         password: passwordController.text.trim(),
       );
     } on FirebaseAuthException catch (e) {
-      // Firebase lanza sus propios erroes para la autenticación
+      // Firebase lanza sus propios errores para la autenticación
       Get.snackbar('$e', '$e');
 
       log('$e');
     }
   }
 
-  // User registration using name, email and password
+  // Método para registrar nuevos usuarios mediante email y contraseña
   registerwithEmailAndPassword(BuildContext context) async {
     try {
       await _auth
           .createUserWithEmailAndPassword(
-        //name: nameController.text,
         email: emailController.text,
         password: passwordController.text,
       )
@@ -89,50 +86,12 @@ class AuthController extends GetxController {
         );
         print(
           "Email: " + result.user!.email.toString(),
-        ); /*
-        print(
-          "Nombre: " + result.user!.name.toString(),
-        );*/
+        );
       });
     } on FirebaseAuthException catch (e) {
       // Firebase lanza sus propios erroes para la autenticación
-      Get.snackbar('$e', '$e');
-
-      // Manejar con switch cuenta ya existente, utilizando errores de Firebase
-      /*var grade = "A";
-      switch (grade) {
-        case "A":
-          {
-            log("Excellent");
-          }
-          break;
-
-        case "B":
-          {
-            log("Good");
-          }
-          break;
-
-        case "C":
-          {
-            log("Fair");
-          }
-          break;
-
-        case "D":
-          {
-            log("Poor");
-          }
-          break;
-
-        default:
-          {
-            log("Invalid choice");
-          }
-          break;
-      }*/
+      Get.snackbar('Este usuario ya está registrado, inicia sesión', '$e');
       log('$e');
-      //print("Failed with error '${e.code}': ${e.message}");
     }
   }
 }

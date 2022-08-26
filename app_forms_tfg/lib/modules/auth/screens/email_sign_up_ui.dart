@@ -40,7 +40,7 @@ class EmailSignUpUi extends StatelessWidget {
                         radius: 120.0,
                         child: ClipOval(
                           child: Image.asset(
-                            "assets/images/flutteracademy-logo.png",
+                            "assets/images/4.png",
                             fit: BoxFit.cover,
                             height: 240,
                             width: 240,
@@ -59,7 +59,7 @@ class EmailSignUpUi extends StatelessWidget {
                       ),
                       const FormVerticalSpacing()*/
                       FormInputFieldWithIcon(
-                        // EMAIL
+                        // Campo de e-mail
                         controller: authController.emailController,
                         iconPrefix: Icons.email,
                         labelText: 'Email',
@@ -71,7 +71,7 @@ class EmailSignUpUi extends StatelessWidget {
                       ),
                       const FormVerticalSpacing(),
                       FormInputFieldWithIcon(
-                        // PASSWORD
+                        // Campo de contraseña
                         controller: authController.passwordController,
                         iconPrefix: Icons.lock,
                         labelText: 'Contraseña',
@@ -99,7 +99,7 @@ class EmailSignUpUi extends StatelessWidget {
                         height: 20,
                       ),
                       LabelButton(
-                        labelText: '¿Tienes una cuenta? Iniciar sesión.',
+                        labelText: '¿Tienes una cuenta? Iniciar sesión',
                         onPressed: () => Get.off(EmailSignInUi()),
                       ),
                     ],

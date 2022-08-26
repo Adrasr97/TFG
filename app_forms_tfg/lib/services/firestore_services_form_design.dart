@@ -52,7 +52,6 @@ class FirestoreFormDesign {
   Future<void> syncFormData() async {
     log('syncFormData');
 
-
     if (_auth.currentUser == null) {
       throw Exception('Sesión no iniciada, acceda primero');
     }
@@ -60,7 +59,7 @@ class FirestoreFormDesign {
     bool isConnected = false;
 // use try-catch to do this operation, so that to get the control over this
 // operation better
-    try{
+    try {
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         isConnected = true;
@@ -69,7 +68,7 @@ class FirestoreFormDesign {
       log('error internet connection');
     }
 
-    if(!isConnected){
+    if (!isConnected) {
       throw Exception('Revise su conexión a internet para sincronizar datos');
     }
 
@@ -90,7 +89,6 @@ class FirestoreFormDesign {
     //extraer todo lo de firestore a local
 
     if (dataQuery.isNotEmpty) {
-
       for (var d in dataQuery) {
         log('data to save -> $d');
         final dataId =
@@ -131,13 +129,9 @@ class FirestoreFormDesign {
     }
 
     //TODO ver los datos insertados de formularios
-
-
-
   }
 
-  Future<void> deleteData(Dato data)async {
-
+  Future<void> deleteData(Dato data) async {
     if (_auth.currentUser == null) {
       throw Exception('Sesión no iniciada, acceda primero');
     }
@@ -145,7 +139,7 @@ class FirestoreFormDesign {
     bool isConnected = false;
 // use try-catch to do this operation, so that to get the control over this
 // operation better
-    try{
+    try {
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         isConnected = true;
@@ -154,42 +148,19 @@ class FirestoreFormDesign {
       log('error internet connection');
     }
 
-    if(!isConnected){
+    if (!isConnected) {
       throw Exception('Revise su conexión a internet para sincronizar datos');
     }
 
     //get the user id from auth
     final userUid = _auth.currentUser!.uid;
 
-
-    final dataId =
-        '${data.formulario}-${data.versionFormulario}-${data.id}';
+    final dataId = '${data.formulario}-${data.versionFormulario}-${data.id}';
     await _firestore
         .collection('user')
         .doc(userUid)
         .collection('data')
-        .doc(dataId).delete();
+        .doc(dataId)
+        .delete();
   }
-
-  /*
-  Future<bool> createNewForm(
-      {required FormModel model,
-      required User user,
-      required TypeForm form}) async {
-    try {
-      model.uid = _firestore.collection(_collection).doc().id;
-      await _firestore.collection(_collection).doc(model.uid).set({
-        "uid": model.uid,
-        "name": model.name,
-        "nameUser": user.displayName,
-        "uidUser": user.uid,
-        "description": model.description,
-        "typeForm": form.name,
-      });
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }*/
-
 }

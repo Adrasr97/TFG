@@ -38,7 +38,6 @@ class EmailSignInUi extends StatelessWidget {
                 radius: 120.0,
                 child: ClipOval(
                   child: Image.asset(
-                    //"assets/images/logo-dynamic-forms-icono.png",
                     "assets/images/4.png",
                     fit: BoxFit.cover,
                     height: 240,
@@ -66,12 +65,13 @@ class EmailSignInUi extends StatelessWidget {
                 controller: authController.passwordController,
                 iconPrefix: Icons.lock,
                 keyboardType: TextInputType.emailAddress,
-                labelText: 'Password',
+                labelText: 'Contraseña',
                 validator: Validator().password, // validacion del email
                 minLines: 1,
-                maxLines: 1, // maxLines requerido para obscureText verdadero
+                maxLines:
+                    1, // maxLines requerido cuando obscureText es verdadero
                 obscureText:
-                    true, // para ocultar los caracteres de la contraseña
+                    true, // muestra los caracteres de la contraseña como ocultos
                 onSaved: (value) =>
                     authController.emailController.text = value!,
                 onChanged: (value) =>
@@ -82,7 +82,7 @@ class EmailSignInUi extends StatelessWidget {
                 labelText: 'Entrar',
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    // si el formulario es valido
+                    // si el par email-contraseña es valido, accede
                     authController.signInWithEmailAndPassword(context);
                   } else {}
                 },
