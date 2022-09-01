@@ -1,4 +1,3 @@
-
 import 'package:app_forms_tfg/models/modelo_formulario.dart';
 import 'package:app_forms_tfg/services/firestore_services_form_design.dart';
 import 'package:app_forms_tfg/services/sqlite_database.dart';
@@ -12,7 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:dynamic_forms/dynamic_forms.dart';
 import 'package:flutter_dynamic_forms/flutter_dynamic_forms.dart';
 import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_components.dart'
-as components;
+    as components;
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
 
@@ -25,15 +24,14 @@ class DetailsScreen extends StatefulWidget {
 }
 
 class _DetailsScreenState extends State<DetailsScreen> {
-
   final SQLiteDatabase sqLiteDatabase = SQLiteDatabase();
   final FirestoreFormDesign firestoreFormDesign = FirestoreFormDesign();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: SingleChildScrollView(
+        padding: EdgeInsets.only(top: 35.0, bottom: 20),
         child: ParsedFormProvider(
           create: (_) => JsonFormManager(),
           content: (widget.formModel.estructura ??= ''),
@@ -50,10 +48,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 builder: (context) {
                   return ElevatedButton(
                     child: const Text("Grabar"),
-                    onPressed: () async{
+                    onPressed: () async {
                       var formProperties =
-                      FormProvider.of<JsonFormManager>(context)
-                          .getFormProperties();
+                          FormProvider.of<JsonFormManager>(context)
+                              .getFormProperties();
                       await _submitToServer(context, formProperties);
                       //Navigator.pop(context);
                     },
@@ -75,7 +73,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
               createFunctionExpression: (parameters) =>
                   SelectNumberPropertyExpression(
                       parameters[0]
-                      as Expression<List<ExpressionProviderElement>>,
+                          as Expression<List<ExpressionProviderElement>>,
                       parameters[1] as Expression<String>),
             ),
             ExplicitFunctionExpressionFactory(
@@ -90,35 +88,31 @@ class _DetailsScreenState extends State<DetailsScreen> {
     );
   }
 
-
-
   Future<void> _submitToServer(
       BuildContext context, List<FormPropertyValue> formProperties) async {
-    try{
+    try {
       await sqLiteDatabase.saveData(widget.formModel, formProperties);
       await firestoreFormDesign.syncFormData();
 
-      final snackBar = new SnackBar(content: new Text('Datos guardados y sincronizados'),
+      final snackBar = new SnackBar(
+          content: new Text('Datos guardados y sincronizados'),
           backgroundColor: Colors.green);
 
       // Find the Scaffold in the Widget tree and use it to show a SnackBar!
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
       Get.back();
-    }catch(ex){
+    } catch (ex) {
       log('ocurrio un error al guardar datos');
       log(ex.toString());
-      final snackBar = new SnackBar(content: new Text(ex.toString()),
-          backgroundColor: Colors.red);
+      final snackBar = new SnackBar(
+          content: new Text(ex.toString()), backgroundColor: Colors.red);
 
       // Find the Scaffold in the Widget tree and use it to show a SnackBar!
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
-
   }
-
 }
-
 
 class SelectNumberPropertyExpression<T extends ExpressionProviderElement>
     extends Expression<List<Expression<Number>>> {
@@ -140,7 +134,7 @@ class SelectNumberPropertyExpression<T extends ExpressionProviderElement>
     var delegateExpressions = value
         .evaluate()
         .map((e) => createDelegateExpression(
-        [e.id!], e.getExpressionProvider(propertyName)))
+            [e.id!], e.getExpressionProvider(propertyName)))
         .cast<Expression<Number?>>()
         .map((e) => NullableToNonNullableExpression(e))
         .toList();

@@ -21,6 +21,11 @@ class EmailSignUpUi extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black45,
+        title: Text("Dynamic Forms - Registro"),
+        //title: Text('Título'),
+      ),
       body: ListView(
         children: [
           Form(

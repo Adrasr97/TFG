@@ -66,7 +66,8 @@ class AuthController extends GetxController {
       );
     } on FirebaseAuthException catch (e) {
       // Firebase lanza sus propios errores para la autenticación
-      Get.snackbar('$e', '$e');
+      Get.snackbar('Email o contraseña incorrecto',
+          "Usuario no encontrado, inténtelo de nuevo");
 
       log('$e');
     }
@@ -90,7 +91,8 @@ class AuthController extends GetxController {
       });
     } on FirebaseAuthException catch (e) {
       // Firebase lanza sus propios erroes para la autenticación
-      Get.snackbar('Este usuario ya está registrado, inicia sesión', '$e');
+      Get.snackbar('Error en el registro',
+          'Este usuario ya está registrado, inicia sesión');
       log('$e');
     }
   }

@@ -94,7 +94,7 @@ class _DataListState extends State<DataList> {
                                               Navigator.of(context).pop();
                                             },
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.black45,
+                                              primary: Colors.black45,
                                               fixedSize: const Size(15, 15),
                                             )),
                                         ElevatedButton(
@@ -104,7 +104,7 @@ class _DataListState extends State<DataList> {
                                               Navigator.of(context).pop();
                                             },
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.black45,
+                                              primary: Colors.black45,
                                               fixedSize: const Size(15, 15),
                                             )),
                                       ],
@@ -157,7 +157,7 @@ class _DataListState extends State<DataList> {
                 });
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black45,
+                primary: Colors.black45,
                 fixedSize: const Size(15, 15),
               ),
               child: const Icon(Icons.add),
@@ -185,7 +185,7 @@ class _DataListState extends State<DataList> {
                 setState(() {});
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black45,
+                primary: Colors.black45,
                 fixedSize: const Size(15, 15),
               ),
               child: const Icon(Icons.refresh),
