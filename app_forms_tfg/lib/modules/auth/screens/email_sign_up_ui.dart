@@ -11,12 +11,10 @@ import 'email_sign_in_ui.dart';
 
 class EmailSignUpUi extends StatelessWidget {
   final AuthController authController = AuthController.to;
-  final GlobalKey<FormState> _formKey =
-      GlobalKey<FormState>(); // Key del formulario
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   /// diseño de formulario de registro con email
   EmailSignUpUi({Key? key}) : super(key: key);
-
 
   @override
   Widget build(BuildContext context) {
@@ -45,24 +43,13 @@ class EmailSignUpUi extends StatelessWidget {
                         radius: 120.0,
                         child: ClipOval(
                           child: Image.asset(
-                            "assets/images/4.png",
+                            "assets/icon/icon.png",
                             fit: BoxFit.cover,
                             height: 240,
                             width: 240,
                           ),
                         ),
                       ),
-                      /*FormInputFieldWithIcon(
-                        // NOMBRE
-                       controller: authController.nameController,
-                        iconPrefix: Icons.person,
-                        labelText: 'Nombre',
-                        validator: Validator().name,
-                        onChanged: (value) => null,
-                        onSaved: (value) =>
-                            authController.nameController.text = value!,
-                      ),
-                      const FormVerticalSpacing()*/
                       FormInputFieldWithIcon(
                         // Campo de e-mail
                         controller: authController.emailController,

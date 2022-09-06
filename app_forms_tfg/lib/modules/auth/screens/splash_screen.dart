@@ -14,7 +14,7 @@ class SplashScreen extends StatelessWidget {
           radius: 120.0,
           child: ClipOval(
             child: Image.asset(
-              "assets/images/4.png",
+              "assets/icon/icon.png",
               fit: BoxFit.cover,
               height: 240,
               width: 240,

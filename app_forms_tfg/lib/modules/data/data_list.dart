@@ -12,7 +12,6 @@ import '../home/screens/details_screen.dart';
 class DataList extends StatefulWidget {
   final FormDesign formulario;
 
-  /// lista de informacion de los formularios llenos
   DataList({Key? key, required this.formulario}) : super(key: key);
 
   @override
@@ -25,7 +24,8 @@ class _DataListState extends State<DataList> {
 
   bool isLoading = true;
   final SQLiteFormDataService _sqLiteDatabase = SQLiteFormDataService();
-  final FirestoreFormDesignService _firestoreFormDesign = FirestoreFormDesignService();
+  final FirestoreFormDesignService _firestoreFormDesign =
+      FirestoreFormDesignService();
 
   List<FormData> _data = [];
 
@@ -87,7 +87,7 @@ class _DataListState extends State<DataList> {
                                               Navigator.of(context).pop();
                                             },
                                             style: ElevatedButton.styleFrom(
-                                              primary: Colors.black45,
+                                              backgroundColor: Colors.black45,
                                               fixedSize: const Size(15, 15),
                                             )),
                                         ElevatedButton(
@@ -97,14 +97,12 @@ class _DataListState extends State<DataList> {
                                               Navigator.of(context).pop();
                                             },
                                             style: ElevatedButton.styleFrom(
-                                              primary: Colors.black45,
+                                              backgroundColor: Colors.black45,
                                               fixedSize: const Size(15, 15),
                                             )),
                                       ],
                                     ),
                                   ),
-                                  // Al clickar sobre Eliminar, se elimina directamente
-                                  //deleteData(context, data),
                                 }
                             },
                           ),
@@ -122,7 +120,7 @@ class _DataListState extends State<DataList> {
               return Text('${snapshot.error}');
             }
 
-            // Por defecto muestra una ruedecita de carga (loading spinner)
+            // Por defecto muestra una loading spinner
             return const CircularProgressIndicator();
           },
         ),
@@ -137,15 +135,16 @@ class _DataListState extends State<DataList> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          DetailsScreen(formModel: widget.formulario,isNew: true,campoClave: 'N/A'),
+                      builder: (context) => DetailsScreen(
+                          formModel: widget.formulario,
+                          isNew: true,
+                          campoClave: 'N/A'),
                     )).then((_) {
-
                   setState(() {});
                 });
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.black45,
+                backgroundColor: Colors.black45,
                 fixedSize: const Size(15, 15),
               ),
               child: const Icon(Icons.add),
@@ -158,14 +157,12 @@ class _DataListState extends State<DataList> {
                       content: new Text('Datos sincronizados'),
                       backgroundColor: Colors.green);
 
-                  // Find the Scaffold in the Widget tree and use it to show a SnackBar!
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 } catch (ex) {
                   final snackBar = new SnackBar(
                       content: new Text(ex.toString()),
                       backgroundColor: Colors.red);
 
-                  // Find the Scaffold in the Widget tree and use it to show a SnackBar!
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 }
 
@@ -173,7 +170,7 @@ class _DataListState extends State<DataList> {
                 setState(() {});
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.black45,
+                backgroundColor: Colors.black45,
                 fixedSize: const Size(15, 15),
               ),
               child: const Icon(Icons.refresh),
@@ -185,7 +182,7 @@ class _DataListState extends State<DataList> {
   }
 
   Future<void> detailsData(BuildContext context, FormData data) async {
-    // Ahora hay que actualizar formulario con los valores de dato
+    // Actualizar formulario con los valores de dato
     var valores = jsonDecode(data.valores.toString());
     log('Valores: $valores');
     var estructura = widget.formulario.estructura;
@@ -238,7 +235,6 @@ class _DataListState extends State<DataList> {
         buscarDesde = id[1];
       }
     } while (id[1] >= 0);
-    //widget.formulario?.estructura = estructura;
     FormDesign formularioEditado = FormDesign(
         id: widget.formulario.id,
         icono: widget.formulario.icono,
@@ -253,10 +249,9 @@ class _DataListState extends State<DataList> {
         context,
         MaterialPageRoute(
           builder: (context) => DetailsScreen(
-            formModel: formularioEditado,
-            isNew: false,
-            campoClave: data.titulo
-          ),
+              formModel: formularioEditado,
+              isNew: false,
+              campoClave: data.titulo),
         )).then((_) {
       setState(() {});
     });
@@ -267,16 +262,14 @@ class _DataListState extends State<DataList> {
       await _sqLiteDatabase.deleteData(data);
       await _firestoreFormDesign.deleteData(data);
       final snackBar = new SnackBar(
-          content: new Text('Datos eliminador correctamente'),
+          content: new Text('Datos eliminados correctamente'),
           backgroundColor: Colors.green);
 
-      // Find the Scaffold in the Widget tree and use it to show a SnackBar!
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     } catch (ex) {
       final snackBar = new SnackBar(
           content: new Text(ex.toString()), backgroundColor: Colors.red);
 
-      // Find the Scaffold in the Widget tree and use it to show a SnackBar!
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
 

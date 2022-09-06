@@ -16,7 +16,6 @@ class EmailSignInUi extends StatelessWidget {
   /// diseño de formulario de acceso con email
   EmailSignInUi({Key? key}) : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +42,7 @@ class EmailSignInUi extends StatelessWidget {
                     radius: 120.0,
                     child: ClipOval(
                       child: Image.asset(
-                        "assets/images/4.png",
+                        "assets/icon/icon.png",
                         fit: BoxFit.cover,
                         height: 240,
                         width: 240,

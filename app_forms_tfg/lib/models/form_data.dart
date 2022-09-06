@@ -9,16 +9,15 @@ class FormData {
   String? valores;
   int uploaded;
 
-  /// información del formulario con sus datos de version y campos llave
-  FormData({
-    required this.id,
-    required this.formulario,
-    required this.versionFormulario,
-    required this.titulo,
-    required this.subtitulo,
-    this.valores,
-    this.uploaded = 0
-  });
+  /// Modelo de datos
+  FormData(
+      {required this.id,
+      required this.formulario,
+      required this.versionFormulario,
+      required this.titulo,
+      required this.subtitulo,
+      this.valores,
+      this.uploaded = 0});
 
   Map<String, dynamic> toMap() {
     log('Mapeando Dato $id:');
@@ -30,7 +29,7 @@ class FormData {
       'titulo': titulo,
       'subtitulo': subtitulo,
       'valores': valores,
-      'uploaded':uploaded
+      'uploaded': uploaded
     };
   }
 

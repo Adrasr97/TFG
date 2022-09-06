@@ -8,7 +8,6 @@ import 'package:app_forms_tfg/services/sqlite_form_data_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-
 /// maneja
 class FirestoreFormDesignService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

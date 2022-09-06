@@ -5,9 +5,7 @@ import 'package:app_forms_tfg/services/firestore_form_design_service.dart';
 import 'package:app_forms_tfg/services/sqlite_form_data_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/instance_manager.dart';
 
-///pantall inicial al cargar con una sesión
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key? key}) : super(key: key);
 
@@ -24,7 +22,36 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> handleClick(String value) async {
     switch (value) {
       case 'Salir':
-        authController.signOut();
+        showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text("Log out"),
+            content: Text(
+                "¿Seguro que quiere salir? En ausencia de internet no podrá acceder a la aplicación."),
+            actions: <Widget>[
+              ElevatedButton(
+                  child: Text("No"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black45,
+                    fixedSize: const Size(15, 15),
+                  )),
+              ElevatedButton(
+                  child: Text("Sí"),
+                  onPressed: () {
+                    authController.signOut();
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black45,
+                    fixedSize: const Size(15, 15),
+                  )),
+            ],
+          ),
+        );
+
         break;
       case 'Sincronizar':
         try {
@@ -80,14 +107,8 @@ class _HomeScreenState extends State<HomeScreen> {
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () => {
-                  Get.to(
-                      () => /*DetailsScreen(
-                        formModel: formController.formsList.value[index],
-                      )*/
-
-                          DataList(
-                              formulario:
-                                  formController.formsList.value[index]))
+                  Get.to(() => DataList(
+                      formulario: formController.formsList.value[index]))
                 },
                 child: Card(
                     child: Padding(
@@ -103,8 +124,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               int.parse(
                                   formController.formsList.value[index].icono),
                               fontFamily: 'MaterialIcons')),
-                          trailing: Text(
-                              'version ${formController.formsList.value[index].version}'),
                         ))),
               );
             },

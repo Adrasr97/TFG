@@ -20,18 +20,17 @@ class SQLiteFormDataService {
       // Cuando la base de datos es creada por primera vez, se crean las tablas necesarias
       onCreate: (db, version) {
         // varchar se convierte a TEXT
-        db.execute(
+        /*db.execute(
           'CREATE TABLE formularios(id varchar(50) PRIMARY KEY, version INTEGER, titulo TEXT, icono TEXT, campoClave TEXT, campoTitulo TEXT, campoSubtitulo TEXT, estructura TEXT)',
-        );
+        );*/
         db.execute(
-          //'CREATE TABLE datos(id varchar(50), formulario varchar(50), versionFormulario INTEGER, autor TEXT, ultimaModificacion TEXT, titulo TEXT, subtitulo TEXT, valores TEXT,  PRIMARY KEY (id, formulario, versionFormulario))',
           'CREATE TABLE datos(id varchar(50), formulario varchar(50), versionFormulario INTEGER, titulo TEXT, subtitulo TEXT, valores TEXT,uploaded INTEGER,  PRIMARY KEY (id, formulario, versionFormulario))',
         );
         log('Tablas creadas.');
         return;
       },
       // Dar valor a la versión
-      //Así se ejecuta la funcion onCreate y se proporciona un path en el que hacer las actualizaciones
+      //Así se ejecuta la funcion onCreate() y se proporciona un path en el que hacer las actualizaciones
       version: 1,
     );
   }
@@ -135,7 +134,8 @@ class SQLiteFormDataService {
     );
   }
 
-  Future<void> saveFirestoreDataToLocal(Map<String, dynamic> firestoreData) async {
+  Future<void> saveFirestoreDataToLocal(
+      Map<String, dynamic> firestoreData) async {
     try {
       final database = await openDatabase(
         path.join(await getDatabasesPath(), DATABASE),
@@ -147,7 +147,11 @@ class SQLiteFormDataService {
       final List<Map<String, dynamic>> queryResult = await database.query(
         'datos',
         where: 'formulario=? and versionFormulario=? and titulo=?',
-        whereArgs: [firestoreData['formulario'], firestoreData['versionFormulario'], firestoreData['titulo']],
+        whereArgs: [
+          firestoreData['formulario'],
+          firestoreData['versionFormulario'],
+          firestoreData['titulo']
+        ],
       );
 
       log('query result: ${queryResult}');
@@ -155,8 +159,7 @@ class SQLiteFormDataService {
       int res = await database.insert('datos', firestoreData,
           conflictAlgorithm: ConflictAlgorithm.replace);
       log('insert result: $res');
-
-    }catch(ex){
+    } catch (ex) {
       log('error saving data: $ex');
       throw Exception('Error al guardar datos, intente de nuevo');
     }
@@ -175,14 +178,13 @@ class SQLiteFormDataService {
     final datos = List.generate(maps.length, (i) {
       log('Fila $i: ${maps[i]['id']} ');
       final dato = FormData(
-        id: maps[i]['id'],
-        formulario: maps[i]['formulario'],
-        versionFormulario: maps[i]['versionFormulario'],
-        titulo: maps[i]['titulo'],
-        subtitulo: maps[i]['subtitulo'],
-        valores: maps[i]['valores'],
-        uploaded: maps[i]['uploaded'] ?? 0
-      );
+          id: maps[i]['id'],
+          formulario: maps[i]['formulario'],
+          versionFormulario: maps[i]['versionFormulario'],
+          titulo: maps[i]['titulo'],
+          subtitulo: maps[i]['subtitulo'],
+          valores: maps[i]['valores'],
+          uploaded: maps[i]['uploaded'] ?? 0);
       //log('Leido de DB:' + dato.toString());
       return dato;
     });
@@ -190,8 +192,7 @@ class SQLiteFormDataService {
     return datos;
   }
 
-  Future<void> deleteData(FormData data) async{
-
+  Future<void> deleteData(FormData data) async {
     final database = await openDatabase(
       path.join(await getDatabasesPath(), DATABASE),
       version: 1,
@@ -199,15 +200,15 @@ class SQLiteFormDataService {
     log('Database open');
 
     log('delete data');
-     await database.delete(
+    await database.delete(
       'datos',
       where: 'formulario=? and versionFormulario=? and id=?',
       whereArgs: [data.formulario, data.versionFormulario, data.id],
     );
-
   }
 
-  Future<bool> checkIfFormDataExist(FormDesign formModel, List<FormPropertyValue> formProperties) async {
+  Future<bool> checkIfFormDataExist(
+      FormDesign formModel, List<FormPropertyValue> formProperties) async {
     log('SaveData: ${formProperties}');
 
     try {
@@ -225,7 +226,7 @@ class SQLiteFormDataService {
       for (var prop in formProperties) {
         log('Procesando propiedad con id ${prop.id}');
         valores +=
-        '{"id":"${prop.id}","property":"${prop.property}","value":"${prop.value}"},';
+            '{"id":"${prop.id}","property":"${prop.property}","value":"${prop.value}"},';
         // No se usan else ifs porque la misma propiedad puede ser campo clave, título y subtítulo
         if (prop.id == formModel.campoClave) {
           id = prop.value;
@@ -242,7 +243,7 @@ class SQLiteFormDataService {
       log('values: ${valores}');
       log('Id de datos: $id');
       log('Titulo: $titulo');
-      log('Subtitulo: $titulo');
+      log('Subtitulo: $subtitulo');
       log('Id del formulario: ${formModel.id}');
 
       Map<String, dynamic> args = {
@@ -264,11 +265,10 @@ class SQLiteFormDataService {
         whereArgs: [formModel.id, formModel.version, titulo],
       );
       log('data insert query result ${queryResult.length}');
-      return queryResult.length>0;
+      return queryResult.length > 0;
     } catch (ex) {
       log('error query data: $ex');
       throw Exception('Error al consultar datos, intente de nuevo');
     }
   }
-
 }

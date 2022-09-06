@@ -8,12 +8,15 @@ import 'package:get/get.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // función asíncrona de Firebase que inicializa una nueva [FirebaseApp] y devuelve la aplicación creada
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Instanciar el controlador para la Autenticación
+  // Instanciar el controlador para la autenticación
   Get.put<AuthController>(AuthController());
+  // Instanciar el controlador para la lista de formularios
   Get.put<FormController>(FormController());
 
   runApp(const MyApp());

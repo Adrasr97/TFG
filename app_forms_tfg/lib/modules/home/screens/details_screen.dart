@@ -14,8 +14,14 @@ class DetailsScreen extends StatefulWidget {
   final FormDesign formModel;
   final bool isNew;
   String campoClave;
-  ///edita los formularios y al final del guardado los almacena en local y sincroniza en firebase
-  DetailsScreen({Key? key, required this.formModel,required this.isNew,required this.campoClave}) : super(key: key);
+
+  ///permite edición de los formularios, guardado en local y sincronizado con firebase
+  DetailsScreen(
+      {Key? key,
+      required this.formModel,
+      required this.isNew,
+      required this.campoClave})
+      : super(key: key);
 
   @override
   State<DetailsScreen> createState() => _DetailsScreenState();
@@ -23,7 +29,8 @@ class DetailsScreen extends StatefulWidget {
 
 class _DetailsScreenState extends State<DetailsScreen> {
   final SQLiteFormDataService sqLiteDatabase = SQLiteFormDataService();
-  final FirestoreFormDesignService firestoreFormDesign = FirestoreFormDesignService();
+  final FirestoreFormDesignService firestoreFormDesign =
+      FirestoreFormDesignService();
 
   @override
   Widget build(BuildContext context) {
@@ -31,25 +38,22 @@ class _DetailsScreenState extends State<DetailsScreen> {
       body: SingleChildScrollView(
         padding: EdgeInsets.only(top: 35.0, bottom: 20),
         child: ParsedFormProvider(
-
           create: (_) => JsonFormManager(),
           content: (widget.formModel.estructura ??= ''),
-                    parsers: components.getDefaultParserList(),
+          parsers: components.getDefaultParserList(),
           child: Column(
             children: [
               _keyValueWidget(),
               FormRenderer<JsonFormManager>(
                 renderers: components.getRenderers(),
-
               ),
-              // Se usa Builder para obtener un contexto (BuildContext) que ya contenga al JsonFormManager
               Builder(
                 builder: (context) {
                   return ElevatedButton(
                     child: const Text("Grabar"),
                     onPressed: () async {
-                      await _submitToServer(context, FormProvider.of<JsonFormManager>(context));
-                      //Navigator.pop(context);
+                      await _submitToServer(
+                          context, FormProvider.of<JsonFormManager>(context));
                     },
                   );
                 },
@@ -85,29 +89,30 @@ class _DetailsScreenState extends State<DetailsScreen> {
   }
 
   Future<void> _submitToServer(
-      BuildContext context,JsonFormManager jsonFormManager ) async {
-
+      BuildContext context, JsonFormManager jsonFormManager) async {
     bool savedLocally = false;
     try {
-
       // evaluar si el formulario es valido
-      if(!jsonFormManager.isFormValid){
+      if (!jsonFormManager.isFormValid) {
         final snackBar = new SnackBar(
-            content: new Text('Formulario no valido'), backgroundColor: Colors.red);
+            content: new Text('Algunos campos obligatorios no tienen valor'),
+            backgroundColor: Colors.red);
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         return;
       }
-
-      List<FormPropertyValue> formProperties = jsonFormManager.getFormProperties();
+      List<FormPropertyValue> formProperties =
+          jsonFormManager.getFormProperties();
 
       //consultar si el dato existe
-      final dataExist = await sqLiteDatabase.checkIfFormDataExist(widget.formModel, formProperties);
+      final dataExist = await sqLiteDatabase.checkIfFormDataExist(
+          widget.formModel, formProperties);
 
       //evaluar si el dato existe y si el registro es nuevo
-      //no se debe registrar un identificaro ya guardado
-      if(dataExist && widget.isNew){
+      //no se debe registrar un identificador ya guardado
+      if (dataExist && widget.isNew) {
         final snackBar = new SnackBar(
-            content: new Text('Identificador ya registrado'), backgroundColor: Colors.red);
+            content: new Text('Identificador ya registrado'),
+            backgroundColor: Colors.red);
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         return;
       }
@@ -120,7 +125,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
           content: new Text('Datos guardados y sincronizados'),
           backgroundColor: Colors.green);
 
-      // Find the Scaffold in the Widget tree and use it to show a SnackBar!
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
       Get.back();
@@ -128,35 +132,35 @@ class _DetailsScreenState extends State<DetailsScreen> {
       log('ocurrio un error al guardar datos');
       log(ex.toString());
 
-      if(savedLocally){
-
+      if (savedLocally) {
         final snackBar = new SnackBar(
-            content: new Text('Datos guardados localmente, revise su conexión a internet para sincronizar'),
+            content: new Text(
+                'Datos guardados localmente, revise su conexión a internet para sincronizar'),
             backgroundColor: Colors.orange);
 
-        // Find the Scaffold in the Widget tree and use it to show a SnackBar!
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
         Get.back();
-      }else{
-
+      } else {
         final snackBar = new SnackBar(
             content: new Text(ex.toString()), backgroundColor: Colors.red);
 
-        // Find the Scaffold in the Widget tree and use it to show a SnackBar!
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
     }
   }
 
   Widget _keyValueWidget() {
-
-    if(widget.isNew){
+    if (widget.isNew) {
       return Container();
     }
 
-    return Text('${widget.formModel.campoClave}: ${widget.campoClave} ');
-
+    return Text('${widget.campoClave} ');
+/*    return Scaffold(
+        appBar: AppBar(
+      backgroundColor: Colors.black45,
+      title: Text('${widget.campoClave} '),
+    ));*/
   }
 }
 

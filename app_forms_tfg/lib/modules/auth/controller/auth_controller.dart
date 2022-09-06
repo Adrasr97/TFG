@@ -7,12 +7,11 @@ import 'package:get/get.dart';
 
 class AuthController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  // Controladores para manejar los datos de email y contraseña del usuario
+  // Se crean los controladores para manejar los datos de email y contraseña del usuario
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  TextEditingController nameController = TextEditingController();
 
-  // Rxn hará que firebaseUser sea una variable observable, si sufre algun cambio se notifica
+  // Rxn hará que firebaseUser sea una variable observable y si sufre algun cambio se notifica
   // User es el Modelo de Usuario de Firebase
   Rxn<User> firebaseUser = Rxn<User>();
 
@@ -20,7 +19,7 @@ class AuthController extends GetxController {
   static AuthController to = Get.find();
 
   // Cuando el controlador esté listo se ejecuta onReady()
-  // Permite identficiar si el usuario existe
+  // Permite identficar si el usuario existe
   @override
   void onReady() {
     // Siempre que el estado de firebaseUser sufra cambio, se llama al handler
