@@ -1,19 +1,18 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:app_forms_tfg/models/data_model.dart';
-import 'package:app_forms_tfg/models/modelo_formulario.dart';
-import 'package:app_forms_tfg/services/firestore_services_form_design.dart';
-import 'package:app_forms_tfg/services/sqlite_database.dart';
+import 'package:app_forms_tfg/models/form_data.dart';
+import 'package:app_forms_tfg/models/form_design.dart';
+import 'package:app_forms_tfg/services/firestore_form_design_service.dart';
+import 'package:app_forms_tfg/services/sqlite_form_data_service.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 
 import '../home/screens/details_screen.dart';
 
 class DataList extends StatefulWidget {
-  final Formulario formulario;
+  final FormDesign formulario;
 
+  /// lista de informacion de los formularios llenos
   DataList({Key? key, required this.formulario}) : super(key: key);
 
   @override
@@ -25,10 +24,10 @@ class _DataListState extends State<DataList> {
   var items = ['Editar', 'Eliminar'];
 
   bool isLoading = true;
-  final SQLiteDatabase _sqLiteDatabase = SQLiteDatabase();
-  final FirestoreFormDesign _firestoreFormDesign = FirestoreFormDesign();
+  final SQLiteFormDataService _sqLiteDatabase = SQLiteFormDataService();
+  final FirestoreFormDesignService _firestoreFormDesign = FirestoreFormDesignService();
 
-  List<Dato> _data = [];
+  List<FormData> _data = [];
 
   @override
   void initState() {
@@ -40,11 +39,11 @@ class _DataListState extends State<DataList> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black45,
-        title: Text(widget.formulario!.titulo),
+        title: Text(widget.formulario.titulo),
         //title: Text('Título'),
       ),
       body: Center(
-        child: FutureBuilder<List<Dato>>(
+        child: FutureBuilder<List<FormData>>(
           future: _sqLiteDatabase.readData(
               widget.formulario.id, widget.formulario.version),
           builder: (context, snapshot) {
@@ -55,17 +54,11 @@ class _DataListState extends State<DataList> {
               return ListView.builder(
                 itemCount: _data.length,
                 itemBuilder: (context, index) {
-                  Dato data = _data[index];
+                  FormData data = _data[index];
                   return Column(
                     children: [
                       Card(
                         child: ListTile(
-                          //leading: CircleAvatar(
-                          //  radius: 28,
-                          //  backgroundColor: Colors.white,
-                          //  child: Icon(IconData(int.parse(formulario!.icono),
-                          //      fontFamily: 'MaterialIcons')),
-                          //),
                           title: Text(data.titulo),
                           subtitle: Text(data.subtitulo),
                           trailing: DropdownButton(
@@ -141,18 +134,13 @@ class _DataListState extends State<DataList> {
           children: [
             ElevatedButton(
               onPressed: () {
-                log((widget.formulario!.estructura ??= ''));
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) =>
-                          DetailsScreen(formModel: widget.formulario),
+                          DetailsScreen(formModel: widget.formulario,isNew: true,campoClave: 'N/A'),
                     )).then((_) {
-                  /*
-                  widget.datos = readData(
-                      widget.formulario!.id, widget.formulario!.version);
-                  setState(() {});
-                  */
+
                   setState(() {});
                 });
               },
@@ -196,11 +184,11 @@ class _DataListState extends State<DataList> {
     );
   }
 
-  Future<void> detailsData(BuildContext context, Dato data) async {
+  Future<void> detailsData(BuildContext context, FormData data) async {
     // Ahora hay que actualizar formulario con los valores de dato
     var valores = jsonDecode(data.valores.toString());
     log('Valores: $valores');
-    var estructura = widget.formulario!.estructura;
+    var estructura = widget.formulario.estructura;
     int buscarDesde = 0;
     var id;
     do {
@@ -229,7 +217,7 @@ class _DataListState extends State<DataList> {
             id[1],
           );
           log('El valor de $propiedad es ${valorDePropiedad[0]} que empieza en posición ${valorDePropiedad[1]}');
-          if (id[0] != '"' + widget.formulario!.campoClave + '"') {
+          if (id[0] != '"' + widget.formulario.campoClave + '"') {
             estructura = estructura.substring(0, valorDePropiedad[1]) +
                 '"' +
                 valor +
@@ -250,35 +238,31 @@ class _DataListState extends State<DataList> {
         buscarDesde = id[1];
       }
     } while (id[1] >= 0);
-    log((widget.formulario!.estructura ??= ''));
     //widget.formulario?.estructura = estructura;
-    Formulario formularioEditado = Formulario(
-        id: widget.formulario!.id,
-        icono: widget.formulario!.icono,
-        titulo: widget.formulario!.titulo,
-        version: widget.formulario!.version,
-        campoClave: widget.formulario!.campoClave,
-        campoSubtitulo: widget.formulario!.campoSubtitulo,
-        campoTitulo: widget.formulario!.campoTitulo,
+    FormDesign formularioEditado = FormDesign(
+        id: widget.formulario.id,
+        icono: widget.formulario.icono,
+        titulo: widget.formulario.titulo,
+        version: widget.formulario.version,
+        campoClave: widget.formulario.campoClave,
+        campoSubtitulo: widget.formulario.campoSubtitulo,
+        campoTitulo: widget.formulario.campoTitulo,
         estructura: estructura);
-    log((formularioEditado.estructura ??= ''));
 
     Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => DetailsScreen(
             formModel: formularioEditado,
+            isNew: false,
+            campoClave: data.titulo
           ),
         )).then((_) {
-      /*widget.datos = readData(widget.formulario!.id,
-                                  widget.formulario!.version);
-
-                               */
       setState(() {});
     });
   }
 
-  Future<void> deleteData(BuildContext context, Dato data) async {
+  Future<void> deleteData(BuildContext context, FormData data) async {
     try {
       await _sqLiteDatabase.deleteData(data);
       await _firestoreFormDesign.deleteData(data);

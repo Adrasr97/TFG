@@ -1,13 +1,13 @@
 import 'package:app_forms_tfg/modules/auth/controller/auth_controller.dart';
 import 'package:app_forms_tfg/modules/data/data_list.dart';
 import 'package:app_forms_tfg/modules/generate_dynamic_forms/controller/form_controller.dart';
-import 'package:app_forms_tfg/modules/home/screens/details_screen.dart';
-import 'package:app_forms_tfg/services/firestore_services_form_design.dart';
-import 'package:app_forms_tfg/services/sqlite_database.dart';
+import 'package:app_forms_tfg/services/firestore_form_design_service.dart';
+import 'package:app_forms_tfg/services/sqlite_form_data_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/instance_manager.dart';
 
+///pantall inicial al cargar con una sesión
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key? key}) : super(key: key);
 
@@ -17,8 +17,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final AuthController authController = AuthController.to;
-  final SQLiteDatabase sqLiteDatabase = SQLiteDatabase();
-  final FirestoreFormDesign firestoreFormDesign = FirestoreFormDesign();
+  final SQLiteFormDataService sqLiteDatabase = SQLiteFormDataService();
+  final FirestoreFormDesignService firestoreFormDesign =
+      FirestoreFormDesignService();
 
   Future<void> handleClick(String value) async {
     switch (value) {
@@ -100,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           leading: Icon(IconData(
                               int.parse(
-                                  formController.formsList.value[index]!.icono),
+                                  formController.formsList.value[index].icono),
                               fontFamily: 'MaterialIcons')),
                           trailing: Text(
                               'version ${formController.formsList.value[index].version}'),

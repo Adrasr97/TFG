@@ -13,6 +13,7 @@ class SignInButton extends StatelessWidget {
 
   final bool centered;
 
+  /// boton de inicio de registro customizado
   const SignInButton(
       {required this.onPressed,
       required this.text,

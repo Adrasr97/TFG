@@ -11,6 +11,7 @@ class EmailSignInButton extends StatelessWidget {
   final Color darkTextColor;
   final Color darkButtonColor;
 
+  /// boton de inicio de sesión con email customizado
   const EmailSignInButton(
       {required this.onPressed,
       this.darkMode = false,

@@ -14,9 +14,9 @@ class EmailSignUpUi extends StatelessWidget {
   final GlobalKey<FormState> _formKey =
       GlobalKey<FormState>(); // Key del formulario
 
+  /// diseño de formulario de registro con email
   EmailSignUpUi({Key? key}) : super(key: key);
 
-  //static const String _title = 'Login';
 
   @override
   Widget build(BuildContext context) {

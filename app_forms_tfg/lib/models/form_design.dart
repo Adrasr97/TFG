@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-class Formulario {
+class FormDesign {
   final String id;
   final int version;
   final String titulo;
@@ -10,7 +10,8 @@ class Formulario {
   final String campoSubtitulo;
   String? estructura;
 
-  Formulario({
+  /// diseño del formulario que se renderiza
+  FormDesign({
     required this.id,
     required this.version,
     required this.titulo,
@@ -22,8 +23,6 @@ class Formulario {
   });
 
   Map<String, dynamic> toMap() {
-    //log('Mapeando Formulario $id:');
-    //log(toString());
     return {
       'id': id,
       'version': version,

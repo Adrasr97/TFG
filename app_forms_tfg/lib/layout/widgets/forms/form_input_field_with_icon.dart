@@ -12,6 +12,8 @@ class FormInputFieldWithIcon extends StatelessWidget {
   final void Function(String) onChanged;
   final void Function(String?) onSaved;
 
+
+  /// diseño de formulario con icono com parametro
   const FormInputFieldWithIcon(
       {Key? key,
       required this.controller,

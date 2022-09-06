@@ -2,25 +2,27 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:app_forms_tfg/models/data_model.dart';
-import 'package:app_forms_tfg/models/modelo_formulario.dart';
-import 'package:app_forms_tfg/services/sqlite_database.dart';
+import 'package:app_forms_tfg/models/form_data.dart';
+import 'package:app_forms_tfg/models/form_design.dart';
+import 'package:app_forms_tfg/services/sqlite_form_data_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class FirestoreFormDesign {
+
+/// maneja
+class FirestoreFormDesignService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final SQLiteDatabase _sqLiteDatabase = SQLiteDatabase();
+  final SQLiteFormDataService _sqLiteDatabase = SQLiteFormDataService();
 
   static String _collection = "designs";
 
-  Stream<List<Formulario>> formsStream() {
+  Stream<List<FormDesign>> formsStream() {
     return _firestore
         .collection(_collection)
         .snapshots()
         .map((QuerySnapshot query) {
-      List<Formulario> retVal = [];
+      List<FormDesign> retVal = [];
 
       for (var element in query.docs) {
         print('firebase form${element}');
@@ -31,7 +33,7 @@ class FirestoreFormDesign {
 
         var formDefinition = jsonDecode(mapData['data']);
 
-        var formulario = Formulario(
+        var formulario = FormDesign(
           id: formDefinition['id'],
           version: formDefinition['version'] ?? 1,
           titulo: formDefinition['titulo'],
@@ -131,7 +133,7 @@ class FirestoreFormDesign {
     //TODO ver los datos insertados de formularios
   }
 
-  Future<void> deleteData(Dato data) async {
+  Future<void> deleteData(FormData data) async {
     if (_auth.currentUser == null) {
       throw Exception('Sesión no iniciada, acceda primero');
     }

@@ -1,31 +1,29 @@
-import 'package:app_forms_tfg/models/modelo_formulario.dart';
-import 'package:app_forms_tfg/services/firestore_services_form_design.dart';
-import 'package:app_forms_tfg/services/sqlite_database.dart';
+import 'package:app_forms_tfg/models/form_design.dart';
+import 'package:app_forms_tfg/services/firestore_form_design_service.dart';
+import 'package:app_forms_tfg/services/sqlite_form_data_service.dart';
 import 'package:expression_language/expression_language.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dynamic_forms/flutter_dynamic_forms.dart';
 import 'package:get/get.dart';
-import 'dart:convert';
 import 'dart:developer';
-import 'package:flutter/services.dart';
 import 'package:dynamic_forms/dynamic_forms.dart';
-import 'package:flutter_dynamic_forms/flutter_dynamic_forms.dart';
 import 'package:flutter_dynamic_forms_components/flutter_dynamic_forms_components.dart'
     as components;
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart' as path;
 
 class DetailsScreen extends StatefulWidget {
-  final Formulario formModel;
-  const DetailsScreen({Key? key, required this.formModel}) : super(key: key);
+  final FormDesign formModel;
+  final bool isNew;
+  String campoClave;
+  ///edita los formularios y al final del guardado los almacena en local y sincroniza en firebase
+  DetailsScreen({Key? key, required this.formModel,required this.isNew,required this.campoClave}) : super(key: key);
 
   @override
   State<DetailsScreen> createState() => _DetailsScreenState();
 }
 
 class _DetailsScreenState extends State<DetailsScreen> {
-  final SQLiteDatabase sqLiteDatabase = SQLiteDatabase();
-  final FirestoreFormDesign firestoreFormDesign = FirestoreFormDesign();
+  final SQLiteFormDataService sqLiteDatabase = SQLiteFormDataService();
+  final FirestoreFormDesignService firestoreFormDesign = FirestoreFormDesignService();
 
   @override
   Widget build(BuildContext context) {
@@ -33,15 +31,16 @@ class _DetailsScreenState extends State<DetailsScreen> {
       body: SingleChildScrollView(
         padding: EdgeInsets.only(top: 35.0, bottom: 20),
         child: ParsedFormProvider(
+
           create: (_) => JsonFormManager(),
           content: (widget.formModel.estructura ??= ''),
-          //content:
-          //    "{\"@name\":\"form\",\"icon\":\"0xe045\",\"titulo\":\"Formulario 2\",\"id\":\"form2\",\"children\":[{\"@name\":\"textField\",\"id\":\"sourceText\",\"label\":\"Enter custom text\",\"value\":\"Hello\"},{\"@name\":\"label\",\"value\":{\"expression\":\"\\\"This is your text in upper case: \\\"  + enMayuscula(@sourceText.value)\"}}]}",
-          parsers: components.getDefaultParserList(),
+                    parsers: components.getDefaultParserList(),
           child: Column(
             children: [
+              _keyValueWidget(),
               FormRenderer<JsonFormManager>(
                 renderers: components.getRenderers(),
+
               ),
               // Se usa Builder para obtener un contexto (BuildContext) que ya contenga al JsonFormManager
               Builder(
@@ -49,10 +48,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   return ElevatedButton(
                     child: const Text("Grabar"),
                     onPressed: () async {
-                      var formProperties =
-                          FormProvider.of<JsonFormManager>(context)
-                              .getFormProperties();
-                      await _submitToServer(context, formProperties);
+                      await _submitToServer(context, FormProvider.of<JsonFormManager>(context));
                       //Navigator.pop(context);
                     },
                   );
@@ -89,9 +85,35 @@ class _DetailsScreenState extends State<DetailsScreen> {
   }
 
   Future<void> _submitToServer(
-      BuildContext context, List<FormPropertyValue> formProperties) async {
+      BuildContext context,JsonFormManager jsonFormManager ) async {
+
+    bool savedLocally = false;
     try {
+
+      // evaluar si el formulario es valido
+      if(!jsonFormManager.isFormValid){
+        final snackBar = new SnackBar(
+            content: new Text('Formulario no valido'), backgroundColor: Colors.red);
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        return;
+      }
+
+      List<FormPropertyValue> formProperties = jsonFormManager.getFormProperties();
+
+      //consultar si el dato existe
+      final dataExist = await sqLiteDatabase.checkIfFormDataExist(widget.formModel, formProperties);
+
+      //evaluar si el dato existe y si el registro es nuevo
+      //no se debe registrar un identificaro ya guardado
+      if(dataExist && widget.isNew){
+        final snackBar = new SnackBar(
+            content: new Text('Identificador ya registrado'), backgroundColor: Colors.red);
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        return;
+      }
+
       await sqLiteDatabase.saveData(widget.formModel, formProperties);
+      savedLocally = true;
       await firestoreFormDesign.syncFormData();
 
       final snackBar = new SnackBar(
@@ -105,12 +127,36 @@ class _DetailsScreenState extends State<DetailsScreen> {
     } catch (ex) {
       log('ocurrio un error al guardar datos');
       log(ex.toString());
-      final snackBar = new SnackBar(
-          content: new Text(ex.toString()), backgroundColor: Colors.red);
 
-      // Find the Scaffold in the Widget tree and use it to show a SnackBar!
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      if(savedLocally){
+
+        final snackBar = new SnackBar(
+            content: new Text('Datos guardados localmente, revise su conexión a internet para sincronizar'),
+            backgroundColor: Colors.orange);
+
+        // Find the Scaffold in the Widget tree and use it to show a SnackBar!
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+        Get.back();
+      }else{
+
+        final snackBar = new SnackBar(
+            content: new Text(ex.toString()), backgroundColor: Colors.red);
+
+        // Find the Scaffold in the Widget tree and use it to show a SnackBar!
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
     }
+  }
+
+  Widget _keyValueWidget() {
+
+    if(widget.isNew){
+      return Container();
+    }
+
+    return Text('${widget.formModel.campoClave}: ${widget.campoClave} ');
+
   }
 }
 

@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-class Dato {
+class FormData {
   final String id;
   final String formulario;
   final int versionFormulario;
@@ -9,7 +9,8 @@ class Dato {
   String? valores;
   int uploaded;
 
-  Dato({
+  /// información del formulario con sus datos de version y campos llave
+  FormData({
     required this.id,
     required this.formulario,
     required this.versionFormulario,
